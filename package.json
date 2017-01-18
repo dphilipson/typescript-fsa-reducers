@@ -1,7 +1,7 @@
 {
   "name": "redux-typescript-reducer-builder",
   "version": "0.1.0",
-  "description": "Fluent syntax for defining reducers on top of redux-typescript-actions.",
+  "description": "Fluent syntax for defining typesafe reducers on top of redux-typescript-actions.",
   "main": "dist/index.js",
   "types": "dist/index",
   "repository": {
@@ -20,5 +20,26 @@
   "bugs": {
     "url": "https://github.com/dphilipson/redux-typescript-reducer-builder/issues"
   },
-  "homepage": "https://github.com/dphilipson/redux-typescript-reducer-builder#readme"
+  "homepage": "https://github.com/dphilipson/redux-typescript-reducer-builder#readme",
+  "devDependencies": {
+    "@types/jest": "^16.0.4",
+    "jest": "^18.1.0",
+    "ts-jest": "^18.0.1",
+    "tslint": "^4.3.1",
+    "typescript": "^2.1.5"
+  },
+  "peerDependencies": {
+    "redux-typescript-actions": "*"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  }
 }
