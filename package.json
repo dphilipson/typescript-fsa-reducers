@@ -1,0 +1,24 @@
+{
+  "name": "redux-typescript-reducer-builder",
+  "version": "0.1.0",
+  "description": "Fluent syntax for defining reducers on top of redux-typescript-actions.",
+  "main": "dist/index.js",
+  "types": "dist/index",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dphilipson/redux-typescript-reducer-builder.git"
+  },
+  "keywords": [
+    "redux",
+    "typescript",
+    "action",
+    "reducer",
+    "builder"
+  ],
+  "author": "David Philipson <dphilipson@gmail.com> (http://dphil.me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dphilipson/redux-typescript-reducer-builder/issues"
+  },
+  "homepage": "https://github.com/dphilipson/redux-typescript-reducer-builder#readme"
+}
