@@ -1,12 +1,12 @@
 {
-  "name": "redux-typescript-reducer-builder",
+  "name": "redux-typescript-reducers",
   "version": "0.1.0",
   "description": "Fluent syntax for defining typesafe reducers on top of redux-typescript-actions.",
   "main": "dist/index.js",
   "types": "dist/index",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dphilipson/redux-typescript-reducer-builder.git"
+    "url": "git://github.com/dphilipson/redux-typescript-reducers.git"
   },
   "keywords": [
     "redux",
@@ -18,18 +18,27 @@
   "author": "David Philipson <dphilipson@gmail.com> (http://dphil.me)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dphilipson/redux-typescript-reducer-builder/issues"
+    "url": "https://github.com/dphilipson/redux-typescript-reducers/issues"
   },
-  "homepage": "https://github.com/dphilipson/redux-typescript-reducer-builder#readme",
+  "homepage": "https://github.com/dphilipson/redux-typescript-reducers#readme",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn run clean && tsc",
+    "jest": "jest",
+    "jest-watch": "yarn run jest -- --watch",
+    "lint": "tslint --project .",
+    "prepublish": "yarn run build",
+    "test": "yarn run lint && tsc --noEmit && yarn run jest",
+    "watch": "yarn run clean && tsc --watch"
+  },
   "devDependencies": {
     "@types/jest": "^16.0.4",
     "jest": "^18.1.0",
+    "redux": "^3.6.0",
+    "redux-typescript-actions": "^1.2.0",
     "ts-jest": "^18.0.1",
     "tslint": "^4.3.1",
     "typescript": "^2.1.5"
-  },
-  "peerDependencies": {
-    "redux-typescript-actions": "*"
   },
   "jest": {
     "transform": {
