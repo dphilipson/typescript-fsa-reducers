@@ -4,6 +4,9 @@
   "description": "Fluent syntax for defining typesafe reducers on top of redux-typescript-actions.",
   "main": "dist/index.js",
   "types": "dist/index",
+  "files": [
+    "dist/"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/dphilipson/redux-typescript-reducers.git"

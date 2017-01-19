@@ -1,4 +1,4 @@
-import { Action, Reducer } from "redux";
+import { Action } from "redux";
 import { ActionCreator, isType } from "redux-typescript-actions";
 
 export interface ReducerBuilder<S> {
