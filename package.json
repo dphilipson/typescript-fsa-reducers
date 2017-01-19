@@ -43,6 +43,9 @@
     "tslint": "^4.3.1",
     "typescript": "^2.1.5"
   },
+  "peerDependencies": {
+    "redux-typescript-actions": "^1.0.0"
+  },
   "jest": {
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"

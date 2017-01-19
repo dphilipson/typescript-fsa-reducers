@@ -60,6 +60,9 @@ const reducer = reducerWithInitialState(INITIAL_STATE)
 Everything is typesafe. If the handler is handling the wrong payload type for the given action
 type, then TypeScript will complain.
 
+The reducer builders are immutable. Each call to `.case()` returns a new reducer rather than
+modifying the callee.
+
 `redux-typescript-reducers` exports two functions: `reducerWithInitialState` and
 `reducerWithoutInitialState`. Redux seems to really want you to provide an initial state for your
 reducers (and enforces it at the root level and if you use `combineReducers`), so
