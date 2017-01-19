@@ -18,14 +18,25 @@ export function reducerWithoutInitialValue<S>(): ReducerBuilder<S> {
     return makeReducer<S>([]);
 }
 
-function makeReducer<S>(handlers: Array<Handler<S, any>>, initialValue?: S): ReducerBuilder<S> {
+interface Case<S, P> {
+    actionCreator: ActionCreator<P>;
+    handler: Handler<S, P>;
+}
+
+function makeReducer<S>(cases: Array<Case<S, any>>, initialValue?: S): ReducerBuilder<S> {
     const reducer = ((state: S = initialValue as S, action: Action): S => {
+        for (let i = 0, length = cases.length; i < length; i++) {
+            const { actionCreator, handler } = cases[i];
+            if (isType(action, actionCreator)) {
+                return handler(state, action.payload);
+            }
+        }
         return state;
     }) as ReducerBuilder<S>;
 
-    reducer.case = <P>(actionCreator: ActionCreator<P>, handler: Handler<S, P>): ReducerBuilder<S> {
-        throw new Error("Not yet implemented");
+    reducer.case = <P>(actionCreator: ActionCreator<P>, handler: Handler<S, P>): ReducerBuilder<S> => {
+        return makeReducer([...cases, { actionCreator, handler }], initialValue);
     };
-    
+
     return reducer;
 }
