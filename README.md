@@ -1,4 +1,4 @@
-# Redux TypeScript Reducer Builder
+# Redux TypeScript Reducers
 
 Fluent syntax for defining typesafe reducers on top of [redux-typescript-actions](https://github.com/aikoven/redux-typescript-actions).
 
