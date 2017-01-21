@@ -37,7 +37,7 @@ describe("reducer builder", () => {
         expect(reducer(undefined, { type: "UNKNOWN" })).toBe(initialState);
     });
 
-    it("should return an initial value if state is undefed if cases provided", () => {
+    it("should return an initial value if state is undefined if cases provided", () => {
         const reducer = reducerWithInitialState(initialState)
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
