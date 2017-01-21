@@ -10,11 +10,11 @@ export interface Handler<S, P> {
     (state: S, payload: P): S;
 }
 
-export function reducerWithInitialValue<S>(initialValue: S): ReducerBuilder<S> {
+export function reducerWithInitialState<S>(initialValue: S): ReducerBuilder<S> {
     return makeReducer([], initialValue);
 }
 
-export function reducerWithoutInitialValue<S>(): ReducerBuilder<S> {
+export function reducerWithoutInitialState<S>(): ReducerBuilder<S> {
     return makeReducer<S>([]);
 }
 

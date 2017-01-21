@@ -1,5 +1,5 @@
 import actionCreatorFactory from "redux-typescript-actions";
-import { reducerWithInitialValue, reducerWithoutInitialValue } from "../src/index";
+import { reducerWithInitialState, reducerWithoutInitialState } from "../src/index";
 
 const actionCreator = actionCreatorFactory();
 
@@ -21,37 +21,37 @@ const initialState: State = { data: "hello" };
 
 describe("reducer builder", () => {
     it("should return a no-op reducer if no cases provided", () => {
-        const reducer = reducerWithoutInitialValue<State>();
+        const reducer = reducerWithoutInitialState<State>();
         expect(reducer(initialState, { type: "UNKNOWN" })).toBe(initialState);
     });
 
     it("should no-op on unknown actions if cases provided", () => {
-        const reducer = reducerWithoutInitialValue<State>()
+        const reducer = reducerWithoutInitialState<State>()
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
         expect(reducer(initialState, { type: "UNKNOWN" })).toBe(initialState);
     });
 
     it("should return an initial value if state is undefined if no cases provided", () => {
-        const reducer = reducerWithInitialValue(initialState);
+        const reducer = reducerWithInitialState(initialState);
         expect(reducer(undefined, { type: "UNKNOWN" })).toBe(initialState);
     });
 
     it("should return an initial value if state is undefed if cases provided", () => {
-        const reducer = reducerWithInitialValue(initialState)
+        const reducer = reducerWithInitialState(initialState)
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
         expect(reducer(undefined, { type: "UNKNOWN" })).toBe(initialState);
     });
 
     it("should call handler on matching action with single handler", () => {
-        const reducer = reducerWithoutInitialValue<State>()
+        const reducer = reducerWithoutInitialState<State>()
             .case(sliceData, sliceDataHandler);
         expect(reducer(initialState, sliceData(1))).toEqual({ data: "ello" });
     });
 
     it("should call handler on matching action with multiple handlers", () => {
-        const reducer = reducerWithoutInitialValue<State>()
+        const reducer = reducerWithoutInitialState<State>()
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
         expect(reducer({ data: "hello" }, dataToUpperCase)).toEqual({ data: "HELLO" });
