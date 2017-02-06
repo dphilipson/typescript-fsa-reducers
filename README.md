@@ -7,7 +7,7 @@ Fluent syntax for defining typesafe reducers on top of [redux-typescript-actions
 ## Installation
 
 ```
-npm install --save redux-typescript-reducers
+npm install --save redux-typescript-reducers redux-typescript-actions
 ```
 
 ## Usage
@@ -84,8 +84,8 @@ modifying the callee.
 
 ### `reducerWithInitialState(initialState)`
 
-Starts a reducer builder-chain which returns the initial state if passed `undefined` as its state.
-For example usage, see the "Usage" section above.
+Starts a reducer builder-chain which uses the provided initial state if passed `undefined` as its
+state. For example usage, see the "Usage" section above.
 
 ### `reducerWithoutInitialState()`
 
@@ -93,11 +93,11 @@ Starts a reducer builder-chain without special logic for an initial state. `unde
 treated like any other value for the state.
 
 Redux seems to really want you to provide an initial state for your reducers. Its `createStore` API
-encourages it and `combineReducers` method enforces it. For their reasoning behind this, see
-[this thread](https://github.com/reactjs/redux/issues/514). For this reason,
+encourages it and `combineReducers` function enforces it. For the Redux author's reasoning behind
+this, see [this thread](https://github.com/reactjs/redux/issues/514). For this reason,
 `reducerWithInitialState` will likely be the more common choice, but the option to not provide an
-initial state is there in case you have some means of composing reducers for which intial state does
-not make sense.
+initial state is there in case you have some means of composing reducers for which intial state is
+unnecessary.
 
 Note that since the type of the state cannot be inferred from the initial state, it must be provided
 as a type parameter:
@@ -117,7 +117,7 @@ not have a use for this.
 
 Example usage:
 ``` javascript
-interface State = StoppedState | RunningState;
+type State = StoppedState | RunningState;
 
 interface StoppedState {
     type: "STOPPED";
