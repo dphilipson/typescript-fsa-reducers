@@ -80,10 +80,86 @@ TypeScript will complain.
 The reducer builders are immutable. Each call to `.case()` returns a new reducer rather than
 modifying the callee.
 
-`redux-typescript-reducers` exports two functions: `reducerWithInitialState` and
-`reducerWithoutInitialState`. Redux seems to really want you to provide an initial state for your
-reducers (and enforces it at the root level and if you use `combineReducers`), so
+## API
+
+### `reducerWithInitialState(initialState)`
+
+Starts a reducer builder-chain which returns the initial state if passed `undefined` as its state.
+For example usage, see the "Usage" section above.
+
+### `reducerWithoutInitialState()`
+
+Starts a reducer builder-chain without special logic for an initial state. `undefined` will be
+treated like any other value for the state.
+
+Redux seems to really want you to provide an initial state for your reducers. Its `createStore` API
+encourages it and `combineReducers` method enforces it. For their reasoning behind this, see
+[this thread](https://github.com/reactjs/redux/issues/514). For this reason,
 `reducerWithInitialState` will likely be the more common choice, but the option to not provide an
-initial state is there in case you use some other means of composing reducers.
+initial state is there in case you have some means of composing reducers for which intial state does
+not make sense.
+
+Note that since the type of the state cannot be inferred from the initial state, it must be provided
+as a type parameter:
+``` javascript
+const reducer = reducerWithoutInitialState<State>()
+    .case(setName, setNameHandler)
+    .case(addBalance, addBalanceHandler)
+    .case(setIsFrozen, setIsFrozenHandler);
+```
+
+### `upcastingReducer()`
+
+Starts a reducer builder-chain which produces a reducer whose return type is a supertype of the
+input state. This is most useful for handling a state which may be in one of several "modes", each
+of which responds differently to actions and can transition to the other modes. Many programs will
+not have a use for this.
+
+Example usage:
+``` javascript
+interface State = StoppedState | RunningState;
+
+interface StoppedState {
+    type: "STOPPED";
+}
+
+interface StartedState {
+    type: "STARTED";
+    count: number;
+}
+
+const startWithCount = actionCreator<number>("START_WITH_COUNT");
+const addToCount = actionCreator<number>("ADD_TO_COUNT");
+const stop = actionCreator<void>("STOP");
+
+function startWithCountHandler(state: StoppedState, count: number): State {
+    return { type: "STARTED", count };
+}
+
+function addToCountHandler(state: StartedState, count: number): State {
+    return { ...state, count: state.count + count };
+}
+
+function stopHandler(state: StartedState): State {
+    return { type: "STOPPED" };
+}
+
+const stoppedReducer = upcastingReducer<StoppedState, State>()
+    .case(startWithCount, startWithCountHandler);
+
+const startedReducer = upcastingReducer<StartedState, State>()
+    .case(addToCount, addToCountHandler)
+    .case(stop, stopHandler);
+
+function reducer(state: State, action: Redux.Action): State {
+    if (state.type === "STOPPED") {
+        return stoppedReducer(state, action);
+    } else if (state.type === "STARTED") {
+        return startedReducer(state, action);
+    } else {
+        throw new Error("Unknown state");
+    }
+}
+```
 
 Copyright © 2017 David Philipson
