@@ -1,6 +1,6 @@
 {
   "name": "redux-typescript-reducers",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Fluent syntax for defining typesafe reducers on top of redux-typescript-actions.",
   "main": "dist/index.js",
   "types": "dist/index",
