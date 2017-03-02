@@ -3,7 +3,7 @@ import { ActionCreator, isType } from "redux-typescript-actions";
 
 export interface ReducerBuilder<InS extends OutS, OutS> {
     case<P>(actionCreator: ActionCreator<P>, handler: Handler<InS, OutS, P>): ReducerBuilder<InS, OutS>;
-    (state: InS | undefined, action: Action): OutS;
+    (state: InS, action: Action): OutS;
 }
 
 export interface Handler<InS extends OutS, OutS, P> {
