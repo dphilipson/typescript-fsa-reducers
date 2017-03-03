@@ -1,24 +1,24 @@
 # Redux TypeScript Reducers
 
-Fluent syntax for defining typesafe reducers on top of [redux-typescript-actions](https://github.com/aikoven/redux-typescript-actions).
+Fluent syntax for defining typesafe reducers on top of [typescript-fsa](https://github.com/aikoven/typescript-fsa).
 
 [![Build Status](https://travis-ci.org/dphilipson/redux-typescript-reducers.svg?branch=master)](https://travis-ci.org/dphilipson/redux-typescript-reducers)
 
 ## Installation
 
 ```
-npm install --save redux-typescript-reducers redux-typescript-actions
+npm install --save redux-typescript-reducers typescript-fsa
 ```
 
 ## Usage
 
 This library allows you to define reducers by chaining a series of handlers for different action
 types and optionally providing an initial value. It builds on top of and assumes familiarity with
-the excellent [redux-typescript-actions](https://github.com/aikoven/redux-typescript-actions).
+the excellent [typescript-fsa](https://github.com/aikoven/typescript-fsa).
 
 Suppose we have the setup:
 ``` javascript
-import actionCreatorFactory from "redux-typescript-actions";
+import actionCreatorFactory from "typescript-fsa";
 const actionCreator = actionCreatorFactory();
 
 interface State {
@@ -48,10 +48,10 @@ function setIsFrozenHandler(state: State, isFrozen: boolean): State {
     return { ...state, isFrozen };
 }
 ```
-Using vanilla `redux-typescript-actions`, you would most likely define a reducer as follows:
+Using vanilla `typescript-fsa`, you would most likely define a reducer as follows:
 ``` javascript
 import { Action } from "redux";
-import { isType } from "redux-typescript-actions";
+import { isType } from "typescript-fsa";
 
 function reducer(state = INITIAL_STATE, action: Action): State {
     if (isType(action, setName)) {

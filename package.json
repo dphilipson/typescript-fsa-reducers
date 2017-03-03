@@ -1,7 +1,7 @@
 {
   "name": "redux-typescript-reducers",
-  "version": "0.2.1",
-  "description": "Fluent syntax for defining typesafe reducers on top of redux-typescript-actions.",
+  "version": "0.2.2",
+  "description": "Fluent syntax for defining typesafe reducers on top of typescript-fsa.",
   "main": "dist/index.js",
   "types": "dist/index",
   "files": [
@@ -37,14 +37,12 @@
   "devDependencies": {
     "@types/jest": "^16.0.4",
     "jest": "^18.1.0",
-    "redux": "^3.6.0",
-    "redux-typescript-actions": "^1.2.0",
     "ts-jest": "^18.0.3",
     "tslint": "^4.4.2",
     "typescript": "^2.1.5"
   },
-  "peerDependencies": {
-    "redux-typescript-actions": "^1.0.0"
+  "dependencies": {
+    "typescript-fsa": "^2.0.0"
   },
   "jest": {
     "transform": {
