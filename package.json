@@ -1,7 +1,7 @@
 {
-  "name": "redux-typescript-reducers",
+  "name": "typescript-fsa-reducers",
   "version": "0.3.0",
-  "description": "Fluent syntax for defining typesafe reducers on top of typescript-fsa.",
+  "description": "Fluent syntax for defining typesafe Redux reducers on top of typescript-fsa.",
   "main": "dist/index.js",
   "types": "dist/index",
   "files": [
@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/dphilipson/redux-typescript-reducers.git"
+    "url": "git://github.com/dphilipson/typescript-fsa-reducers.git"
   },
   "keywords": [
     "redux",
@@ -21,9 +21,9 @@
   "author": "David Philipson <dphilipson@gmail.com> (http://dphil.me)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dphilipson/redux-typescript-reducers/issues"
+    "url": "https://github.com/dphilipson/typescript-fsa-reducers/issues"
   },
-  "homepage": "https://github.com/dphilipson/redux-typescript-reducers#readme",
+  "homepage": "https://github.com/dphilipson/typescript-fsa-reducers#readme",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "yarn run clean && tsc",

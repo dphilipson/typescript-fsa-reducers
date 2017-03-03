@@ -1,13 +1,13 @@
-# Redux TypeScript Reducers
+# TypeScript FSA Reducers
 
-Fluent syntax for defining typesafe reducers on top of [typescript-fsa](https://github.com/aikoven/typescript-fsa).
+Fluent syntax for defining typesafe Redux reducers on top of [typescript-fsa](https://github.com/aikoven/typescript-fsa).
 
-[![Build Status](https://travis-ci.org/dphilipson/redux-typescript-reducers.svg?branch=master)](https://travis-ci.org/dphilipson/redux-typescript-reducers)
+[![Build Status](https://travis-ci.org/dphilipson/typescript-fsa-reducers.svg?branch=master)](https://travis-ci.org/dphilipson/typescript-fsa-reducers)
 
 ## Installation
 
 ```
-npm install --save redux-typescript-reducers typescript-fsa
+npm install --save typescript-fsa-reducers typescript-fsa
 ```
 
 ## Usage
@@ -65,9 +65,9 @@ function reducer(state = INITIAL_STATE, action: Action): State {
     }
 }
 ```
-With `redux-typescript-reducers`, this is exactly equivalent to the following code:
+With `typescript-fsa-reducers`, this is exactly equivalent to the following code:
 ``` javascript
-import { reducerWithInitialState } from "redux-typescript-reducer";
+import { reducerWithInitialState } from "typescript-fsa-reducers";
 
 const reducer = reducerWithInitialState(INITIAL_STATE)
     .case(setName, setNameHandler)
