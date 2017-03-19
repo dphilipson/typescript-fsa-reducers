@@ -1,6 +1,6 @@
 {
   "name": "typescript-fsa-reducers",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Fluent syntax for defining typesafe Redux reducers on top of typescript-fsa.",
   "main": "dist/index.js",
   "types": "dist/index",
@@ -32,7 +32,7 @@
     "lint": "tslint --project .",
     "prepublish": "yarn run build",
     "test": "yarn run lint && tsc --noEmit && yarn run jest",
-    "watch": "yarn run clean && tsc --watch"
+    "watch": "yarn run clean && tsc --watch --sourceMap"
   },
   "devDependencies": {
     "@types/jest": "^16.0.4",
