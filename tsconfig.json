@@ -10,7 +10,6 @@
         "noUnusedParameters": true,
         "outDir": "dist/",
         "skipLibCheck": true,
-        "sourceMap": true,
         "strictNullChecks": true,
         "target": "es5"
     },
