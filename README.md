@@ -96,7 +96,7 @@ Redux seems to really want you to provide an initial state for your reducers. It
 encourages it and `combineReducers` function enforces it. For the Redux author's reasoning behind
 this, see [this thread](https://github.com/reactjs/redux/issues/514). For this reason,
 `reducerWithInitialState` will likely be the more common choice, but the option to not provide an
-initial state is there in case you have some means of composing reducers for which intial state is
+initial state is there in case you have some means of composing reducers for which initial state is
 unnecessary.
 
 Note that since the type of the state cannot be inferred from the initial state, it must be provided
