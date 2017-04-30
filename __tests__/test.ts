@@ -71,4 +71,35 @@ describe("reducer builder", () => {
             .case(toBasicState, toBasicStateHandler);
         expect(reducer({ data: "hello", count: 2 }, toBasicState)).toEqual({ data: "hello" });
     });
+
+    it("should be mutated by .case()", () => {
+        const reducer = reducerWithInitialState(initialState);
+        reducer.case(sliceData, sliceDataHandler);
+        reducer.case(dataToUpperCase, dataToUpperCaseHandler);
+        expect(reducer(undefined, sliceData(1))).toEqual({ data: "ello" });
+    });
+
+    describe(".build()", () => {
+        const reducer = reducerWithInitialState(initialState)
+            .case(sliceData, sliceDataHandler)
+            .case(dataToUpperCase, dataToUpperCaseHandler)
+            .build();
+
+        it("should return a function with no extra keys", () => {
+            expect(Object.keys(reducer)).toEqual([]);
+        });
+
+        it("should return a function which behaves like the reducer", () => {
+            expect(reducer(undefined, sliceData(1))).toEqual({ data: "ello" });
+        });
+
+        it("should return a function that does not mutate if parent builder mutates", () => {
+            const builder = reducerWithInitialState(initialState);
+            const reducer1 = builder.build();
+            builder.case(sliceData, sliceDataHandler);
+            const reducer2 = builder.build();
+            expect(reducer1(undefined, sliceData(1))).toEqual({ data: "hello" });
+            expect(reducer2(undefined, sliceData(1))).toEqual({ data: "ello" });
+        });
+    });
 });
