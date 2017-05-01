@@ -77,6 +77,22 @@ const reducer = reducerWithInitialState(INITIAL_STATE)
 Everything is typesafe. If the types of the action payload and handler don't line up, then
 TypeScript will complain.
 
+If the full action is needed rather than just the payload, `.caseWithAction()` may be used in
+place of `.case()`. For example:
+``` javascript
+import { Action } from "typescript-fsa";
+
+const setText = actionCreator<string>("SET_TEXT");
+
+const reducer = reducerWithInitialState({ text, lastEditBy: "" })
+    .caseWithAction(incrementCount, (state, { payload, meta }) => ({
+        text: payload,
+        lastEditBy: meta.author,
+    }));
+
+// Returns { text: "hello", lastEditBy: "cbrontë" }.
+reducer(undefined, setText("hello", { author: "cbrontë" }));
+```
 The reducer builder chains are mutable. Each call to `.case()` modifies the callee to respond to the
 specified action type. If this is undesirable, see the [`.build()`](#build) method below.
 
@@ -169,10 +185,16 @@ function reducer(state: State, action: Redux.Action): State {
 
 ### Reducer chain methods
 
-#### `.case(actionCreator, handler)`
+#### `.case(actionCreator, handler(state, payload) => newState)`
 
 Mutates the reducer such that it applies `handler` when passed actions matching the type of
 `actionCreator`. For examples, see [Usage](#usage).
+
+#### `.caseWithAction(actionCreator, handler(state, action) => newState)`
+
+Like `.case()`, except that `handler` receives the entire action as its second argument rather
+than just the payload. This is useful if you want to read other properties of the action, such as
+`meta` or `error`. For an example, see [Usage](#usage).
 
 #### `.build()`
 

@@ -66,6 +66,19 @@ describe("reducer builder", () => {
         expect(reducer(initialState, dataToUpperCase)).toEqual({ data: "HELLO" });
     });
 
+    it("should call full-action handler when using .caseWithAction()", () => {
+        const reducer = reducerWithInitialState(initialState)
+            .caseWithAction(sliceData, (state, action) => ({
+                ...state,
+                data: state.data.slice(action.payload),
+                meta: { author: "cbrontë" },
+            }));
+        expect(reducer(undefined, sliceData(1, "meta"))).toEqual({
+            data: "ello",
+            meta: { author: "cbrontë" },
+        });
+    });
+
     it("should call upcasting handler on matching action", () => {
         const reducer = upcastingReducer<StateWithCount, State>()
             .case(toBasicState, toBasicStateHandler);

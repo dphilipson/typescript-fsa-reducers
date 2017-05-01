@@ -1,7 +1,11 @@
-import { ActionCreator, AnyAction, isType } from "typescript-fsa";
+import { Action, ActionCreator, AnyAction, isType } from "typescript-fsa";
 
 export interface ReducerBuilder<InS extends OutS, OutS> {
     case<P>(actionCreator: ActionCreator<P>, handler: Handler<InS, OutS, P>): ReducerBuilder<InS, OutS>;
+    caseWithAction<P>(
+        actionCreator: ActionCreator<P>,
+        handler: Handler<InS, OutS, Action<P>>,
+    ): ReducerBuilder<InS, OutS>;
     build(): (state: InS, action: AnyAction) => OutS;
     (state: InS, action: AnyAction): OutS;
 }
@@ -24,7 +28,7 @@ export function upcastingReducer<InS extends OutS, OutS>(): ReducerBuilder<InS, 
 
 interface Case<InS extends OutS, OutS, P> {
     actionCreator: ActionCreator<P>;
-    handler: Handler<InS, OutS, P>;
+    handler: Handler<InS, OutS, Action<P>>;
 }
 
 type CaseList<InS extends OutS, OutS> = Array<Case<InS, OutS, any>>;
@@ -33,13 +37,16 @@ function makeReducer<InS extends OutS, OutS>(initialState?: InS): ReducerBuilder
     const cases: CaseList<InS, OutS> = [];
     const reducer = getReducerFunction(initialState, cases) as ReducerBuilder<InS, OutS>;
 
-    reducer.case = <P>(
+    reducer.caseWithAction = <P>(
         actionCreator: ActionCreator<P>,
-        handler: Handler<InS, OutS, P>
-    ): ReducerBuilder<InS, OutS> => {
+        handler: Handler<InS, OutS, Action<P>>,
+    ) => {
         cases.push({ actionCreator, handler });
         return reducer;
     };
+
+    reducer.case = <P>(actionCreator: ActionCreator<P>, handler: Handler<InS, OutS, P>) =>
+        reducer.caseWithAction(actionCreator, (state, action) => handler(state, action.payload));
 
     reducer.build = () => getReducerFunction(initialState, cases.slice());
 
@@ -54,7 +61,7 @@ function getReducerFunction<InS extends OutS, OutS>(
         for (let i = 0, length = cases.length; i < length; i++) {
             const { actionCreator, handler } = cases[i];
             if (isType(action, actionCreator)) {
-                return handler(state, action.payload);
+                return handler(state, action);
             }
         }
         return state;
