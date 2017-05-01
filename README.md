@@ -77,17 +77,19 @@ const reducer = reducerWithInitialState(INITIAL_STATE)
 Everything is typesafe. If the types of the action payload and handler don't line up, then
 TypeScript will complain.
 
-The reducer builders are immutable. Each call to `.case()` returns a new reducer rather than
-modifying the callee.
+The reducer builder chains are mutable. Each call to `.case()` modifies the callee to respond to the
+specified action type. If this is undesirable, see the [`.build()`](#build) method below.
 
 ## API
 
-### `reducerWithInitialState(initialState)`
+### Starting a reducer chain
+
+#### `reducerWithInitialState(initialState)`
 
 Starts a reducer builder-chain which uses the provided initial state if passed `undefined` as its
-state. For example usage, see the "Usage" section above.
+state. For example usage, see the [Usage](#usage) section above.
 
-### `reducerWithoutInitialState()`
+#### `reducerWithoutInitialState()`
 
 Starts a reducer builder-chain without special logic for an initial state. `undefined` will be
 treated like any other value for the state.
@@ -108,12 +110,15 @@ const reducer = reducerWithoutInitialState<State>()
     .case(setIsFrozen, setIsFrozenHandler);
 ```
 
-### `upcastingReducer()`
+#### `upcastingReducer()`
 
-Starts a reducer builder-chain which produces a reducer whose return type is a supertype of the
-input state. This is most useful for handling a state which may be in one of several "modes", each
-of which responds differently to actions and can transition to the other modes. Many programs will
+Starts a builder-chain which produces a "reducer" whose return type is a supertype of the input
+state. This is most useful for handling a state which may be in one of several "modes", each of
+which responds differently to actions and can transition to the other modes. Many programs will
 not have a use for this.
+
+Note that the function produced is technically not a reducer because the initial and updated
+states are different type.
 
 Example usage:
 ``` javascript
@@ -160,6 +165,43 @@ function reducer(state: State, action: Redux.Action): State {
         throw new Error("Unknown state");
     }
 }
+```
+
+### Reducer chain methods
+
+#### `.case(actionCreator, handler)`
+
+Mutates the reducer such that it applies `handler` when passed actions matching the type of
+`actionCreator`. For examples, see [Usage](#usage).
+
+#### `.build()`
+
+Returns a plain reducer function whose behavior matches the current state of the reducer chain.
+Further updates to the chain (through calls to `.case()`) will have no effect on this function.
+
+There are two reasons you may want to do this:
+
+1.  **You want to ensure that the reducer is not modified further**
+
+    Calling `.build()` is an example of defensive coding. It prevents someone from causing confusing
+    behavior by importing your reducer in an unrelated file and adding cases to it.
+
+2.  **You want to your module to export a reducer, but not have its types depend on
+    `typescript-fsa-reducers`**
+
+    If the code that defines a reducer and the code that uses it reside in separate NPM modules, you
+    may run into type errors since the exported reducer has type `ReducerBuilder`, which the
+    consuming module does not recognize unless it also depends on `typescript-fsa-reducers`. This is
+    avoided by returning a plain function instead.
+
+Example usage:
+
+``` javascript
+const reducer = reducerWithInitialState(INITIAL_STATE)
+    .case(setName, setNameHandler)
+    .case(addBalance, addBalanceHandler)
+    .case(setIsFrozen, setIsFrozenHandler)
+    .build();
 ```
 
 Copyright © 2017 David Philipson
