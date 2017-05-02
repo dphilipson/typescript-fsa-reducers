@@ -1,4 +1,10 @@
-import { Action, ActionCreator, AnyAction, isType } from "typescript-fsa";
+import { Action, ActionCreator, isType } from "typescript-fsa";
+
+// Redeclare AnyAction from typescript-fsa so modules can export reducers created by this library
+// without requiring a dependency on typescript-fsa.
+export interface AnyAction {
+    type: any;
+}
 
 export interface ReducerBuilder<InS extends OutS, OutS> {
     case<P>(actionCreator: ActionCreator<P>, handler: Handler<InS, OutS, P>): ReducerBuilder<InS, OutS>;
