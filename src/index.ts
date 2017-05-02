@@ -6,7 +6,7 @@ export interface ReducerBuilder<InS extends OutS, OutS> {
         actionCreator: ActionCreator<P>,
         handler: Handler<InS, OutS, Action<P>>,
     ): ReducerBuilder<InS, OutS>;
-    // Intentionally avoid AnyAction type so modules can export reducers created using .build()
+    // Intentionally avoid AnyAction type so packages can export reducers created using .build()
     // without requiring a dependency on typescript-fsa.
     build(): (state: InS, action: { type: any }) => OutS;
     (state: InS, action: AnyAction): OutS;

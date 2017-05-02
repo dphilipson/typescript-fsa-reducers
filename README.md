@@ -208,12 +208,12 @@ There are two reasons you may want to do this:
     Calling `.build()` is an example of defensive coding. It prevents someone from causing confusing
     behavior by importing your reducer in an unrelated file and adding cases to it.
 
-2.  **You want to your module to export a reducer, but not have its types depend on
+2.  **You want to your package to export a reducer, but not have its types depend on
     `typescript-fsa-reducers`**
 
-    If the code that defines a reducer and the code that uses it reside in separate NPM modules, you
+    If the code that defines a reducer and the code that uses it reside in separate NPM packages, you
     may run into type errors since the exported reducer has type `ReducerBuilder`, which the
-    consuming module does not recognize unless it also depends on `typescript-fsa-reducers`. This is
+    consuming package does not recognize unless it also depends on `typescript-fsa-reducers`. This is
     avoided by returning a plain function instead.
 
 Example usage:
