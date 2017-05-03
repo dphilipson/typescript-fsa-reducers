@@ -84,7 +84,7 @@ import { Action } from "typescript-fsa";
 
 const setText = actionCreator<string>("SET_TEXT");
 
-const reducer = reducerWithInitialState({ text, lastEditBy: "" })
+const reducer = reducerWithInitialState({ text: "", lastEditBy: "" })
     .caseWithAction(incrementCount, (state, { payload, meta }) => ({
         text: payload,
         lastEditBy: meta.author,
