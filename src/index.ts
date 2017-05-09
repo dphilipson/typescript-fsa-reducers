@@ -60,8 +60,7 @@ function getReducerFunction<InS extends OutS, OutS>(
     cases: CaseList<InS, OutS>,
 ) {
     return (state = initialState as InS, action: AnyAction) => {
-        for (let i = 0, length = cases.length; i < length; i++) {
-            const { actionCreator, handler } = cases[i];
+        for (const { actionCreator, handler } of cases) {
             if (isType(action, actionCreator)) {
                 return handler(state, action);
             }
