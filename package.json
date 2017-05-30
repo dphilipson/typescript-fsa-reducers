@@ -32,7 +32,7 @@
     "lint": "tslint --project .",
     "prepublish": "yarn run build",
     "test": "yarn run lint && tsc --noEmit && yarn run jest",
-    "watch": "yarn run clean && tsc --watch --sourceMap"
+    "watch": "yarn run clean && tsc --watch"
   },
   "devDependencies": {
     "@types/jest": "^16.0.4",

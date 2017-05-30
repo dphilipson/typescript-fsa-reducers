@@ -194,7 +194,8 @@ Mutates the reducer such that it applies `handler` when passed actions matching 
 
 Like `.case()`, except that `handler` receives the entire action as its second argument rather
 than just the payload. This is useful if you want to read other properties of the action, such as
-`meta` or `error`. For an example, see [Usage](#usage).
+`meta` or `error`, or if you want to pass the entire action unmodified to some other function. For
+an example, see [Usage](#usage).
 
 #### `.build()`
 
