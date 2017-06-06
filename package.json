@@ -18,7 +18,7 @@
     "reducer",
     "builder"
   ],
-  "author": "David Philipson <dphilipson@gmail.com> (http://dphil.me)",
+  "author": "David Philipson <david.philipson@gmail.com> (http://dphil.me)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dphilipson/typescript-fsa-reducers/issues"
