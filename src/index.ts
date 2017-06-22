@@ -1,22 +1,28 @@
 import { Action, ActionCreator, AnyAction, isType } from "typescript-fsa";
 
 export interface ReducerBuilder<InS extends OutS, OutS> {
-    case<P>(actionCreator: ActionCreator<P>, handler: Handler<InS, OutS, P>): ReducerBuilder<InS, OutS>;
+    case<P>(
+        actionCreator: ActionCreator<P>,
+        handler: Handler<InS, OutS, P>,
+    ): ReducerBuilder<InS, OutS>;
     caseWithAction<P>(
         actionCreator: ActionCreator<P>,
         handler: Handler<InS, OutS, Action<P>>,
     ): ReducerBuilder<InS, OutS>;
-    // Intentionally avoid AnyAction type so packages can export reducers created using .build()
-    // without requiring a dependency on typescript-fsa.
+    // Intentionally avoid AnyAction type so packages can export reducers
+    // created using .build() without requiring a dependency on typescript-fsa.
     build(): (state: InS, action: { type: any }) => OutS;
     (state: InS, action: AnyAction): OutS;
 }
 
-export interface Handler<InS extends OutS, OutS, P> {
-    (state: InS, payload: P): OutS;
-}
+export type Handler<InS extends OutS, OutS, P> = (
+    state: InS,
+    payload: P,
+) => OutS;
 
-export function reducerWithInitialState<S>(initialState: S): ReducerBuilder<S, S> {
+export function reducerWithInitialState<S>(
+    initialState: S,
+): ReducerBuilder<S, S> {
     return makeReducer<S, S>(initialState);
 }
 
@@ -24,7 +30,10 @@ export function reducerWithoutInitialState<S>(): ReducerBuilder<S, S> {
     return makeReducer<S, S>();
 }
 
-export function upcastingReducer<InS extends OutS, OutS>(): ReducerBuilder<InS, OutS> {
+export function upcastingReducer<InS extends OutS, OutS>(): ReducerBuilder<
+    InS,
+    OutS
+> {
     return makeReducer<InS, OutS>();
 }
 
@@ -35,9 +44,14 @@ interface Case<InS extends OutS, OutS, P> {
 
 type CaseList<InS extends OutS, OutS> = Array<Case<InS, OutS, any>>;
 
-function makeReducer<InS extends OutS, OutS>(initialState?: InS): ReducerBuilder<InS, OutS> {
+function makeReducer<InS extends OutS, OutS>(
+    initialState?: InS,
+): ReducerBuilder<InS, OutS> {
     const cases: CaseList<InS, OutS> = [];
-    const reducer = getReducerFunction(initialState, cases) as ReducerBuilder<InS, OutS>;
+    const reducer = getReducerFunction(initialState, cases) as ReducerBuilder<
+        InS,
+        OutS
+    >;
 
     reducer.caseWithAction = <P>(
         actionCreator: ActionCreator<P>,
@@ -47,8 +61,13 @@ function makeReducer<InS extends OutS, OutS>(initialState?: InS): ReducerBuilder
         return reducer;
     };
 
-    reducer.case = <P>(actionCreator: ActionCreator<P>, handler: Handler<InS, OutS, P>) =>
-        reducer.caseWithAction(actionCreator, (state, action) => handler(state, action.payload));
+    reducer.case = <P>(
+        actionCreator: ActionCreator<P>,
+        handler: Handler<InS, OutS, P>,
+    ) =>
+        reducer.caseWithAction(actionCreator, (state, action) =>
+            handler(state, action.payload),
+        );
 
     reducer.build = () => getReducerFunction(initialState, cases.slice());
 

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "inlineSources": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*"
+  ]
+}

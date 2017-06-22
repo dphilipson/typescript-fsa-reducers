@@ -25,24 +25,36 @@
   },
   "homepage": "https://github.com/dphilipson/typescript-fsa-reducers#readme",
   "scripts": {
+    "build": "yarn run clean && tsc -p tsconfig.build.json",
     "clean": "rm -rf dist",
-    "build": "yarn run clean && tsc",
+    "format": "yarn run format-glob -- \"'src/**/*.{ts,tsx}'\"",
+    "format-glob": "prettier --tab-width 4 --trailing-comma all --write",
     "jest": "jest",
     "jest-watch": "yarn run jest -- --watch",
     "lint": "tslint --project .",
+    "precommit": "lint-staged",
     "prepublish": "yarn run build",
-    "test": "yarn run lint && tsc --noEmit && yarn run jest",
-    "watch": "yarn run clean && tsc --watch"
+    "test": "yarn run lint && tsc --noEmit && yarn run jest"
   },
   "devDependencies": {
-    "@types/jest": "^16.0.4",
-    "jest": "^18.1.0",
-    "ts-jest": "^18.0.3",
-    "tslint": "^4.4.2",
-    "typescript": "^2.1.5"
+    "@types/jest": "^20.0.1",
+    "husky": "^0.13.4",
+    "jest": "^20.0.4",
+    "lint-staged": "^4.0.0",
+    "prettier": "^1.4.4",
+    "ts-jest": "^20.0.6",
+    "tslint": "^5.4.3",
+    "typescript": "^2.3.4"
   },
   "dependencies": {
     "typescript-fsa": "^2.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "format-glob",
+      "yarn run lint -- --fix",
+      "git add"
+    ]
   },
   "jest": {
     "transform": {
