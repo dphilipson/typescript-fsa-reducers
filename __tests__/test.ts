@@ -1,5 +1,9 @@
 import actionCreatorFactory from "typescript-fsa";
-import { reducerWithInitialState, reducerWithoutInitialState, upcastingReducer } from "../src/index";
+import {
+    reducerWithInitialState,
+    reducerWithoutInitialState,
+    upcastingReducer,
+} from "../src/index";
 
 const actionCreator = actionCreatorFactory();
 
@@ -43,19 +47,25 @@ describe("reducer builder", () => {
 
     it("should return an initial value if state is undefined if no cases provided", () => {
         const reducer = reducerWithInitialState(initialState);
-        expect(reducer(undefined, { type: "UNKNOWN" })).toBe(initialState);
+        expect(reducer(undefined as any, { type: "UNKNOWN" })).toBe(
+            initialState,
+        );
     });
 
     it("should return an initial value if state is undefined if cases provided", () => {
         const reducer = reducerWithInitialState(initialState)
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
-        expect(reducer(undefined, { type: "UNKNOWN" })).toBe(initialState);
+        expect(reducer(undefined as any, { type: "UNKNOWN" })).toBe(
+            initialState,
+        );
     });
 
     it("should call handler on matching action with single handler", () => {
-        const reducer = reducerWithoutInitialState<State>()
-            .case(sliceData, sliceDataHandler);
+        const reducer = reducerWithoutInitialState<State>().case(
+            sliceData,
+            sliceDataHandler,
+        );
         expect(reducer(initialState, sliceData(1))).toEqual({ data: "ello" });
     });
 
@@ -63,33 +73,42 @@ describe("reducer builder", () => {
         const reducer = reducerWithoutInitialState<State>()
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
-        expect(reducer(initialState, dataToUpperCase)).toEqual({ data: "HELLO" });
+        expect(reducer(initialState, dataToUpperCase)).toEqual({
+            data: "HELLO",
+        });
     });
 
     it("should call full-action handler when using .caseWithAction()", () => {
-        const reducer = reducerWithInitialState(initialState)
-            .caseWithAction(sliceData, (state, action) => ({
-                ...state,
-                data: state.data.slice(action.payload),
-                meta: { author: "cbrontë" },
-            }));
-        expect(reducer(undefined, sliceData(1, "meta"))).toEqual({
+        const reducer = reducerWithInitialState(
+            initialState,
+        ).caseWithAction(sliceData, (state, action) => ({
+            ...state,
+            data: state.data.slice(action.payload),
+            meta: { author: "cbrontë" },
+        }));
+        expect(reducer(undefined as any, sliceData(1, "meta"))).toEqual({
             data: "ello",
             meta: { author: "cbrontë" },
         });
     });
 
     it("should call upcasting handler on matching action", () => {
-        const reducer = upcastingReducer<StateWithCount, State>()
-            .case(toBasicState, toBasicStateHandler);
-        expect(reducer({ data: "hello", count: 2 }, toBasicState)).toEqual({ data: "hello" });
+        const reducer = upcastingReducer<StateWithCount, State>().case(
+            toBasicState,
+            toBasicStateHandler,
+        );
+        expect(reducer({ data: "hello", count: 2 }, toBasicState)).toEqual({
+            data: "hello",
+        });
     });
 
     it("should be mutated by .case()", () => {
         const reducer = reducerWithInitialState(initialState);
         reducer.case(sliceData, sliceDataHandler);
         reducer.case(dataToUpperCase, dataToUpperCaseHandler);
-        expect(reducer(undefined, sliceData(1))).toEqual({ data: "ello" });
+        expect(reducer(undefined as any, sliceData(1))).toEqual({
+            data: "ello",
+        });
     });
 
     describe(".build()", () => {
@@ -103,7 +122,9 @@ describe("reducer builder", () => {
         });
 
         it("should return a function which behaves like the reducer", () => {
-            expect(reducer(undefined, sliceData(1))).toEqual({ data: "ello" });
+            expect(reducer(undefined as any, sliceData(1))).toEqual({
+                data: "ello",
+            });
         });
 
         it("should return a function that does not mutate if parent builder mutates", () => {
@@ -111,8 +132,12 @@ describe("reducer builder", () => {
             const reducer1 = builder.build();
             builder.case(sliceData, sliceDataHandler);
             const reducer2 = builder.build();
-            expect(reducer1(undefined, sliceData(1))).toEqual({ data: "hello" });
-            expect(reducer2(undefined, sliceData(1))).toEqual({ data: "ello" });
+            expect(reducer1(undefined as any, sliceData(1))).toEqual({
+                data: "hello",
+            });
+            expect(reducer2(undefined as any, sliceData(1))).toEqual({
+                data: "ello",
+            });
         });
     });
 });
