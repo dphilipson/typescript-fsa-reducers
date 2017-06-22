@@ -15,6 +15,8 @@ interface StateWithCount extends State {
     count: number;
 }
 
+const initialState: State = { data: "hello" };
+
 const sliceData = actionCreator<number>("SLICE_DATA");
 function sliceDataHandler(state: State, fromIndex: number): State {
     return { data: state.data.slice(fromIndex) };
@@ -29,8 +31,6 @@ const toBasicState = actionCreator<void>("TO_BASIC_STATE");
 function toBasicStateHandler(state: StateWithCount): State {
     return { data: state.data };
 }
-
-const initialState: State = { data: "hello" };
 
 describe("reducer builder", () => {
     it("should return a no-op reducer if no cases provided", () => {
@@ -101,6 +101,61 @@ describe("reducer builder", () => {
             data: "hello",
         });
     });
+
+    (() => {
+        // Scope for shared testing values for .cases() and .casesWithAction().
+
+        interface PayloadA {
+            data: string;
+            x: number;
+        }
+        interface PayloadB {
+            data: string;
+            y: number;
+        }
+        interface PayloadC {
+            data: string;
+            z: number;
+        }
+        const actionA = actionCreator<PayloadA>("ACTION_A");
+        const actionB = actionCreator<PayloadB>("ACTION_B");
+        const actionC = actionCreator<PayloadC>("ACTION_C");
+
+        it("should call handler on any matching action when using .cases()", () => {
+            const reducer = reducerWithInitialState(initialState).cases(
+                [actionA, actionB, actionC],
+                (state, payload) => {
+                    return { ...state, data: payload.data };
+                },
+            );
+            expect(
+                reducer(initialState, actionA({ data: "from A", x: 0 })),
+            ).toEqual({ data: "from A" });
+            expect(
+                reducer(initialState, actionB({ data: "from B", y: 1 })),
+            ).toEqual({ data: "from B" });
+            expect(
+                reducer(initialState, actionC({ data: "from C", z: 2 })),
+            ).toEqual({ data: "from C" });
+        });
+
+        it("should call handler on any matching action when using .casesWithAction()", () => {
+            const reducer = reducerWithInitialState(
+                initialState,
+            ).casesWithAction([actionA, actionB, actionC], (state, action) => {
+                return { ...state, data: action.payload.data };
+            });
+            expect(
+                reducer(initialState, actionA({ data: "from A", x: 0 })),
+            ).toEqual({ data: "from A" });
+            expect(
+                reducer(initialState, actionB({ data: "from B", y: 1 })),
+            ).toEqual({ data: "from B" });
+            expect(
+                reducer(initialState, actionC({ data: "from C", z: 2 })),
+            ).toEqual({ data: "from C" });
+        });
+    })();
 
     it("should be mutated by .case()", () => {
         const reducer = reducerWithInitialState(initialState);
