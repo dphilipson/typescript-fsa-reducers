@@ -34,7 +34,7 @@
     "lint": "tslint --project .",
     "precommit": "lint-staged",
     "prepublish": "yarn run build",
-    "test": "yarn run lint && tsc --noEmit && yarn run jest"
+    "test": "yarn run lint && tsc && yarn run jest"
   },
   "devDependencies": {
     "@types/jest": "^20.0.1",
