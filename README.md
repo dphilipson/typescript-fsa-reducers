@@ -6,11 +6,38 @@ Fluent syntax for defining typesafe Redux reducers on top of
 [![Build
 Status](https://travis-ci.org/dphilipson/typescript-fsa-reducers.svg?branch=master)](https://travis-ci.org/dphilipson/typescript-fsa-reducers)
 
-## Installation
+## Introduction
 
+This library will allow you to write typesafe reducers that look like this:
+```ts
+const reducer = reducerWithInitialState(INITIAL_STATE)
+    .case(setName, setNameHandler)
+    .case(addBalance, addBalanceHandler)
+    .case(setIsFrozen, setIsFrozenHandler);
 ```
-npm install --save typescript-fsa-reducers typescript-fsa
-```
+It removes the boilerplate normally associated with writing reducers, including
+if-else chains, the default case, and the need to pull the payload field off of
+the action.
+
+## Table of Contents
+
+<!-- toc -->
+
+- [Usage](#usage)
+- [Installation](#installation)
+- [API](#api)
+  * [Starting a reducer chain](#starting-a-reducer-chain)
+    + [`reducerWithInitialState(initialState)`](#reducerwithinitialstateinitialstate)
+    + [`reducerWithoutInitialState()`](#reducerwithoutinitialstate)
+    + [`upcastingReducer()`](#upcastingreducer)
+  * [Reducer chain methods](#reducer-chain-methods)
+    + [`.case(actionCreator, handler(state, payload) => newState)`](#caseactioncreator-handlerstate-payload--newstate)
+    + [`.caseWithAction(actionCreator, handler(state, action) => newState)`](#casewithactionactioncreator-handlerstate-action--newstate)
+    + [`.cases(actionCreators, handler(state, payload) => newState)`](#casesactioncreators-handlerstate-payload--newstate)
+    + [`.casesWithAction(actionCreators, handler(state, action) => newState)`](#caseswithactionactioncreators-handlerstate-action--newstate)
+    + [`.build()`](#build)
+
+<!-- tocstop -->
 
 ## Usage
 
@@ -20,7 +47,7 @@ top of and assumes familiarity with the excellent
 [typescript-fsa](https://github.com/aikoven/typescript-fsa).
 
 Suppose we have the setup:
-``` javascript
+```ts
 import actionCreatorFactory from "typescript-fsa";
 const actionCreator = actionCreatorFactory();
 
@@ -37,33 +64,24 @@ const INITIAL_STATE: State = {
 };
 
 const setName = actionCreator<string>("SET_NAME");
-function setNameHandler(state: State, name: string): State {
-    return { ...state, name };
-}
-
 const addBalance = actionCreator<number>("ADD_BALANCE");
-function addBalanceHandler(state: State, addedBalance: number): State {
-    return { ...state, balance: state.balance + addedBalance };
-}
-
 const setIsFrozen = actionCreator<boolean>("SET_IS_FROZEN");
-function setIsFrozenHandler(state: State, isFrozen: boolean): State {
-    return { ...state, isFrozen };
-}
 ```
-Using vanilla `typescript-fsa`, you would most likely define a reducer as
-follows:
-``` javascript
+Using vanilla `typescript-fsa`, you might define a reducer as follows:
+```ts
 import { Action } from "redux";
 import { isType } from "typescript-fsa";
 
 function reducer(state = INITIAL_STATE, action: Action): State {
     if (isType(action, setName)) {
-        return setNameHandler(state, action.payload);
+        return { ...state, name: setName.payload };
     } else if (isType(action, addBalance)) {
-        return addBalanceHandler(state, action.payload);
+        return {
+            ...state,
+            balance: state.balance + action.payload,
+        };
     } else if (isType(action, setIsFrozen)) {
-        return setIsFrozenHandler(state, action.payload);
+        return { ...state, isFrozen: payload.isFrozen };
     } else {
         return state;
     }
@@ -71,20 +89,29 @@ function reducer(state = INITIAL_STATE, action: Action): State {
 ```
 With `typescript-fsa-reducers`, this is exactly equivalent to the following
 code:
-``` javascript
+```ts
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 
 const reducer = reducerWithInitialState(INITIAL_STATE)
-    .case(setName, setNameHandler)
-    .case(addBalance, addBalanceHandler)
-    .case(setIsFrozen, setIsFrozenHandler);
+    .case(setName, (action, name) => ({ ...state, name }))
+    .case(addBalance, (action, amount) => ({
+        ...state,
+        balance: state.balance + amount,
+    }))
+    .case(setIsFrozen, (action, isFrozen) => ({ ...state, isFrozen }));
 ```
+Note that unlike the vanilla case, there is no need to pull the payload off of
+the action, as it is passed directly to the handler, nor is it necessary to
+specify a default case which returns `state` unmodified.
+
 Everything is typesafe. If the types of the action payload and handler don't
-line up, then TypeScript will complain.
+line up, then TypeScript will complain. If you find it easier to read, you can
+of course pull out the handlers into separate functions, as shown in the
+[Introduction](#introduction).
 
 If the full action is needed rather than just the payload, `.caseWithAction()`
 may be used in place of `.case()`. For example:
-``` javascript
+```ts
 import { Action } from "typescript-fsa";
 
 const setText = actionCreator<string>("SET_TEXT");
@@ -100,7 +127,7 @@ reducer(undefined, setText("hello", { author: "cbrontë" }));
 ```
 Further, a single handler may be assigned to multiple action types at once using
 `.cases()` or `.casesWithAction()`:
-``` javascript
+```ts
 const reducer = reducerWithInitialState(initialState)
     .cases([setName, addBalance], (state, payload) => {
         // Payload has type SetNamePayload | AddBalancePayload.
@@ -110,6 +137,22 @@ const reducer = reducerWithInitialState(initialState)
 The reducer builder chains are mutable. Each call to `.case()` modifies the
 callee to respond to the specified action type. If this is undesirable, see the
 [`.build()`](#build) method below.
+
+## Installation
+
+For this library to be useful, you will need
+[typescript-fsa](https://github.com/aikoven/typescript-fsa) as well to define
+your actions.
+
+With Yarn:
+```
+yarn add typescript-fsa-reducers typescript-fsa
+```
+
+Or with NPM:
+```
+npm install --save typescript-fsa-reducers typescript-fsa
+```
 
 ## API
 
