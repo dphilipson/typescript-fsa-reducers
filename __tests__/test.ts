@@ -84,9 +84,11 @@ describe("reducer builder", () => {
         ).caseWithAction(sliceData, (state, action) => ({
             ...state,
             data: state.data.slice(action.payload),
-            meta: { author: "cbrontë" },
+            meta: { author: action.meta && action.meta.author },
         }));
-        expect(reducer(undefined as any, sliceData(1, "meta"))).toEqual({
+        expect(
+            reducer(undefined as any, sliceData(1, { author: "cbrontë" })),
+        ).toEqual({
             data: "ello",
             meta: { author: "cbrontë" },
         });

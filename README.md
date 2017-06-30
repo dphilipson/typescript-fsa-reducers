@@ -46,7 +46,8 @@ different action types and optionally providing an initial value. It builds on
 top of and assumes familiarity with the excellent
 [typescript-fsa](https://github.com/aikoven/typescript-fsa).
 
-Suppose we have the setup:
+Suppose we have used [typescript-fsa](https://github.com/aikoven/typescript-fsa)
+to define our state and some actions:
 ```ts
 import actionCreatorFactory from "typescript-fsa";
 const actionCreator = actionCreatorFactory();
@@ -67,7 +68,7 @@ const setName = actionCreator<string>("SET_NAME");
 const addBalance = actionCreator<number>("ADD_BALANCE");
 const setIsFrozen = actionCreator<boolean>("SET_IS_FROZEN");
 ```
-Using vanilla `typescript-fsa`, you might define a reducer as follows:
+Using vanilla `typescript-fsa`, we might define a reducer as follows:
 ```ts
 import { Action } from "redux";
 import { isType } from "typescript-fsa";
@@ -87,8 +88,7 @@ function reducer(state = INITIAL_STATE, action: Action): State {
     }
 }
 ```
-With `typescript-fsa-reducers`, this is exactly equivalent to the following
-code:
+Using this library, the above is exactly equivalent to the following code:
 ```ts
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 
