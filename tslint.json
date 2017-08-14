@@ -1,20 +1,10 @@
 {
-  "extends": "tslint:recommended",
-  "rules": {
-    "arrow-parens": [
-      true,
-      "ban-single-arg-parens"
-    ],
-    "interface-name": [
-      true,
-      "never-prefix"
-    ],
-    "no-bitwise": false,
-    "object-literal-sort-keys": false,
-    "semicolon": [
-      true,
-      "always",
-      "ignore-bound-class-methods"
-    ]
-  }
+    "extends": "tslint:recommended",
+    "rules": {
+        "arrow-parens": [true, "ban-single-arg-parens"],
+        "interface-name": [true, "never-prefix"],
+        "no-bitwise": false,
+        "object-literal-sort-keys": false,
+        "semicolon": [true, "always", "ignore-bound-class-methods"]
+    }
 }

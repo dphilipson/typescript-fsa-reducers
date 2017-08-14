@@ -1,76 +1,58 @@
 {
-  "name": "typescript-fsa-reducers",
-  "version": "0.4.4",
-  "description": "Fluent syntax for defining typesafe Redux reducers on top of typescript-fsa.",
-  "main": "dist/index.js",
-  "types": "dist/index",
-  "files": [
-    "dist/"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/dphilipson/typescript-fsa-reducers.git"
-  },
-  "keywords": [
-    "redux",
-    "typescript",
-    "action",
-    "reducer",
-    "builder"
-  ],
-  "author": "David Philipson <david.philipson@gmail.com> (http://dphil.me)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/dphilipson/typescript-fsa-reducers/issues"
-  },
-  "homepage": "https://github.com/dphilipson/typescript-fsa-reducers#readme",
-  "scripts": {
-    "build": "yarn run clean && tsc -p tsconfig.build.json",
-    "clean": "rm -rf dist/*",
-    "format": "yarn run format-glob -- \"'src/**/*.{ts,tsx}'\"",
-    "format-glob": "prettier --tab-width 4 --trailing-comma all --write",
-    "generate-toc": "markdown-toc -i README.md",
-    "jest": "jest",
-    "jest-watch": "yarn run jest -- --watch",
-    "lint": "tslint --project .",
-    "precommit": "lint-staged",
-    "prepublish": "yarn run build",
-    "test": "yarn run lint && tsc && yarn run jest"
-  },
-  "devDependencies": {
-    "@types/jest": "^20.0.2",
-    "husky": "^0.14.1",
-    "jest": "^20.0.4",
-    "lint-staged": "^4.0.0",
-    "markdown-toc": "^1.1.0",
-    "prettier": "^1.5.2",
-    "ts-jest": "^20.0.6",
-    "tslint": "^5.4.3",
-    "typescript": "^2.4.1"
-  },
-  "dependencies": {
-    "typescript-fsa": "^2.0.0"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "format-glob",
-      "yarn run lint -- --fix",
-      "git add"
-    ],
-    "*.md": [
-      "yarn run generate-toc && true",
-      "git add"
-    ]
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    "name": "typescript-fsa-reducers",
+    "version": "0.4.4",
+    "description": "Fluent syntax for defining typesafe Redux reducers on top of typescript-fsa.",
+    "main": "dist/index.js",
+    "types": "dist/index",
+    "files": ["dist/"],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/dphilipson/typescript-fsa-reducers.git"
     },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ]
-  }
+    "keywords": ["redux", "typescript", "action", "reducer", "builder"],
+    "author": "David Philipson <david.philipson@gmail.com> (http://dphil.me)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/dphilipson/typescript-fsa-reducers/issues"
+    },
+    "homepage": "https://github.com/dphilipson/typescript-fsa-reducers#readme",
+    "scripts": {
+        "build": "yarn run clean && tsc -p tsconfig.build.json",
+        "clean": "rm -rf dist/*",
+        "format": "yarn run format-glob -- '**/*.{js,json,ts,tsx}'",
+        "format-glob": "prettier --tab-width 4 --trailing-comma all --write",
+        "generate-toc": "markdown-toc -i README.md && true",
+        "jest": "jest",
+        "jest-watch": "yarn run jest -- --watch",
+        "lint": "tslint --project .",
+        "precommit": "lint-staged",
+        "prepublish": "yarn run build",
+        "test": "yarn run lint && tsc && yarn run jest"
+    },
+    "devDependencies": {
+        "@types/jest": "^20.0.2",
+        "husky": "^0.14.1",
+        "jest": "^20.0.4",
+        "lint-staged": "^4.0.0",
+        "markdown-toc": "^1.1.0",
+        "prettier": "^1.5.3",
+        "ts-jest": "^20.0.6",
+        "tslint": "^5.4.3",
+        "typescript": "^2.4.1"
+    },
+    "dependencies": {
+        "typescript-fsa": "^2.0.0"
+    },
+    "lint-staged": {
+        "*.{js,json}": ["format-glob", "git add"],
+        "*.{ts,tsx}": ["format-glob", "yarn run lint -- --fix", "git add"],
+        "*.md": ["yarn run generate-toc", "git add"]
+    },
+    "jest": {
+        "transform": {
+            ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+        "moduleFileExtensions": ["ts", "tsx", "js"]
+    }
 }

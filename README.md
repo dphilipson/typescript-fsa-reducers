@@ -75,14 +75,14 @@ import { isType } from "typescript-fsa";
 
 function reducer(state = INITIAL_STATE, action: Action): State {
     if (isType(action, setName)) {
-        return { ...state, name: setName.payload };
+        return { ...state, name: action.payload };
     } else if (isType(action, addBalance)) {
         return {
             ...state,
             balance: state.balance + action.payload,
         };
     } else if (isType(action, setIsFrozen)) {
-        return { ...state, isFrozen: payload.isFrozen };
+        return { ...state, isFrozen: action.payload };
     } else {
         return state;
     }
@@ -110,7 +110,9 @@ of course pull out the handlers into separate functions, as shown in the
 [Introduction](#introduction).
 
 If the full action is needed rather than just the payload, `.caseWithAction()`
-may be used in place of `.case()`. For example:
+may be used in place of `.case()`. This may be useful if you intend to pass the
+action unchanged to a different reducer, or if you need to read the `meta` field
+of the action. For example:
 ```ts
 import { Action } from "typescript-fsa";
 
