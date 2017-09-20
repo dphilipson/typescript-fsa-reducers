@@ -93,12 +93,12 @@ Using this library, the above is exactly equivalent to the following code:
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 
 const reducer = reducerWithInitialState(INITIAL_STATE)
-    .case(setName, (action, name) => ({ ...state, name }))
-    .case(addBalance, (action, amount) => ({
+    .case(setName, (state, name) => ({ ...state, name }))
+    .case(addBalance, (state, amount) => ({
         ...state,
         balance: state.balance + amount,
     }))
-    .case(setIsFrozen, (action, isFrozen) => ({ ...state, isFrozen }));
+    .case(setIsFrozen, (state, isFrozen) => ({ ...state, isFrozen }));
 ```
 Note that unlike the vanilla case, there is no need to pull the payload off of
 the action, as it is passed directly to the handler, nor is it necessary to
