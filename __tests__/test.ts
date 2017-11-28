@@ -47,18 +47,14 @@ describe("reducer builder", () => {
 
     it("should return an initial value if state is undefined if no cases provided", () => {
         const reducer = reducerWithInitialState(initialState);
-        expect(reducer(undefined as any, { type: "UNKNOWN" })).toBe(
-            initialState,
-        );
+        expect(reducer(undefined, { type: "UNKNOWN" })).toBe(initialState);
     });
 
     it("should return an initial value if state is undefined if cases provided", () => {
         const reducer = reducerWithInitialState(initialState)
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
-        expect(reducer(undefined as any, { type: "UNKNOWN" })).toBe(
-            initialState,
-        );
+        expect(reducer(undefined, { type: "UNKNOWN" })).toBe(initialState);
     });
 
     it("should call handler on matching action with single handler", () => {
@@ -87,7 +83,7 @@ describe("reducer builder", () => {
             meta: { author: action.meta && action.meta.author },
         }));
         expect(
-            reducer(undefined as any, sliceData(1, { author: "cbrontë" })),
+            reducer(undefined, sliceData(1, { author: "cbrontë" })),
         ).toEqual({
             data: "ello",
             meta: { author: "cbrontë" },
@@ -163,7 +159,7 @@ describe("reducer builder", () => {
         const reducer = reducerWithInitialState(initialState);
         reducer.case(sliceData, sliceDataHandler);
         reducer.case(dataToUpperCase, dataToUpperCaseHandler);
-        expect(reducer(undefined as any, sliceData(1))).toEqual({
+        expect(reducer(undefined, sliceData(1))).toEqual({
             data: "ello",
         });
     });
@@ -179,7 +175,7 @@ describe("reducer builder", () => {
         });
 
         it("should return a function which behaves like the reducer", () => {
-            expect(reducer(undefined as any, sliceData(1))).toEqual({
+            expect(reducer(undefined, sliceData(1))).toEqual({
                 data: "ello",
             });
         });
@@ -189,10 +185,10 @@ describe("reducer builder", () => {
             const reducer1 = builder.build();
             builder.case(sliceData, sliceDataHandler);
             const reducer2 = builder.build();
-            expect(reducer1(undefined as any, sliceData(1))).toEqual({
+            expect(reducer1(undefined, sliceData(1))).toEqual({
                 data: "hello",
             });
-            expect(reducer2(undefined as any, sliceData(1))).toEqual({
+            expect(reducer2(undefined, sliceData(1))).toEqual({
                 data: "ello",
             });
         });
