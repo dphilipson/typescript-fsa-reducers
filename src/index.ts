@@ -1,4 +1,12 @@
-import { Action, ActionCreator, AnyAction, isType } from "typescript-fsa";
+import {
+    Action,
+    ActionCreator,
+    AnyAction,
+    AsyncActionCreators,
+    Failure,
+    isType,
+    Success,
+} from "typescript-fsa";
 
 export interface ReducerBuilder<InS extends OutS, OutS> {
     case<P>(
@@ -8,6 +16,18 @@ export interface ReducerBuilder<InS extends OutS, OutS> {
     caseWithAction<P>(
         actionCreator: ActionCreator<P>,
         handler: Handler<InS, OutS, Action<P>>,
+    ): ReducerBuilder<InS, OutS>;
+
+    caseWithAsyncAction<P, S, E>(
+        actionCreator: AsyncActionCreators<P, S, E>,
+        startedHandler: Handler<InS, OutS, Action<P>>,
+        doneHandler: Handler<InS, OutS, Action<Success<P, S>>>,
+        failedHandler: Handler<InS, OutS, Action<Failure<P, E>>>,
+    ): ReducerBuilder<InS, OutS>;
+
+    casesWithAsyncFailure<P, S, E>(
+        actionCreators: Array<AsyncActionCreators<P, S, E>>,
+        failedHandler: Handler<InS, OutS, Action<Failure<P, E>>>,
     ): ReducerBuilder<InS, OutS>;
 
     // cases variadic overloads
@@ -124,6 +144,17 @@ function makeReducer<InS extends OutS, OutS>(
         return reducer;
     };
 
+    reducer.caseWithAsyncAction = <P, S, E>(
+        actionCreator: AsyncActionCreators<P, S, E>,
+        startedHandler: Handler<InS, OutS, Action<P>>,
+        doneHandler: Handler<InS, OutS, Action<Success<P, S>>>,
+        failedHandler: Handler<InS, OutS, Action<Failure<P, E>>>,
+    ) =>
+        reducer
+            .caseWithAction(actionCreator.started, startedHandler)
+            .caseWithAction(actionCreator.done, doneHandler)
+            .caseWithAction(actionCreator.failed, failedHandler);
+
     reducer.case = <P>(
         actionCreator: ActionCreator<P>,
         handler: Handler<InS, OutS, P>,
@@ -150,6 +181,15 @@ function makeReducer<InS extends OutS, OutS>(
             handler(state, action.payload),
         );
     reducer.build = () => getReducerFunction(initialState, cases.slice());
+
+    reducer.casesWithAsyncFailure = <P, S, E>(
+        actionCreators: Array<AsyncActionCreators<P, S, E>>,
+        failedHandler: Handler<InS, OutS, Action<Failure<P, E>>>,
+    ) =>
+        reducer.casesWithAction(
+            actionCreators.map(a => a.failed),
+            failedHandler,
+        );
 
     return reducer;
 }

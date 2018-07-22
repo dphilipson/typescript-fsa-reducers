@@ -35,6 +35,8 @@ the action.
     + [`.caseWithAction(actionCreator, handler(state, action) => newState)`](#casewithactionactioncreator-handlerstate-action--newstate)
     + [`.cases(actionCreators, handler(state, payload) => newState)`](#casesactioncreators-handlerstate-payload--newstate)
     + [`.casesWithAction(actionCreators, handler(state, action) => newState)`](#caseswithactionactioncreators-handlerstate-action--newstate)
+    + [`.caseWithAsyncAction(actionCreator, started, done, failed) `](#casewithasyncactionactioncreator-started-done-failed-)
+    + [`casesWithAsyncFailure(actionCreators, failed)`](#caseswithasyncfailureactioncreators-failed)
     + [`.build()`](#build)
 
 <!-- tocstop -->
@@ -297,6 +299,14 @@ reducerWithInitialState(initialState)
 
 Like `.cases()`, except that the handler receives the entire action as its
 second argument rather than just the payload.
+
+#### `.caseWithAsyncAction(actionCreator, started, done, failed) `
+
+Allows to register handlers for all async operations at once
+
+#### `casesWithAsyncFailure(actionCreators, failed)`
+
+Register failure handlers for all action creators
 
 #### `.build()`
 
