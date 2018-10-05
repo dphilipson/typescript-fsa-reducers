@@ -211,6 +211,8 @@ interface StartedState {
     count: number;
 }
 
+const INITIAL_STATE: State = { type: "STOPPED" };
+
 const startWithCount = actionCreator<number>("START_WITH_COUNT");
 const addToCount = actionCreator<number>("ADD_TO_COUNT");
 const stop = actionCreator<void>("STOP");
@@ -234,7 +236,7 @@ const startedReducer = upcastingReducer<StartedState, State>()
     .case(addToCount, addToCountHandler)
     .case(stop, stopHandler);
 
-function reducer(state: State, action: Redux.Action): State {
+function reducer(state = INITIAL_STATE, action: Redux.Action): State {
     if (state.type === "STOPPED") {
         return stoppedReducer(state, action);
     } else if (state.type === "STARTED") {
