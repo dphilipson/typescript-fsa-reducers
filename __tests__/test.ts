@@ -75,19 +75,20 @@ describe("reducer builder", () => {
     });
 
     it("should call full-action handler when using .caseWithAction()", () => {
-        const reducer = reducerWithInitialState(
-            initialState,
-        ).caseWithAction(sliceData, (state, action) => ({
-            ...state,
-            data: state.data.slice(action.payload),
-            meta: { author: action.meta && action.meta.author },
-        }));
-        expect(
-            reducer(undefined, sliceData(1, { author: "cbrontë" })),
-        ).toEqual({
-            data: "ello",
-            meta: { author: "cbrontë" },
-        });
+        const reducer = reducerWithInitialState(initialState).caseWithAction(
+            sliceData,
+            (state, action) => ({
+                ...state,
+                data: state.data.slice(action.payload),
+                meta: { author: action.meta && action.meta.author },
+            }),
+        );
+        expect(reducer(undefined, sliceData(1, { author: "cbrontë" }))).toEqual(
+            {
+                data: "ello",
+                meta: { author: "cbrontë" },
+            },
+        );
     });
 
     it("should call upcasting handler on matching action", () => {
@@ -128,13 +129,19 @@ describe("reducer builder", () => {
             );
             expect(
                 reducer(initialState, actionA({ data: "from A", x: 0 })),
-            ).toEqual({ data: "from A" });
+            ).toEqual({
+                data: "from A",
+            });
             expect(
                 reducer(initialState, actionB({ data: "from B", y: 1 })),
-            ).toEqual({ data: "from B" });
+            ).toEqual({
+                data: "from B",
+            });
             expect(
                 reducer(initialState, actionC({ data: "from C", z: 2 })),
-            ).toEqual({ data: "from C" });
+            ).toEqual({
+                data: "from C",
+            });
         });
 
         it("should call handler on any matching action when using .casesWithAction()", () => {
@@ -145,13 +152,19 @@ describe("reducer builder", () => {
             });
             expect(
                 reducer(initialState, actionA({ data: "from A", x: 0 })),
-            ).toEqual({ data: "from A" });
+            ).toEqual({
+                data: "from A",
+            });
             expect(
                 reducer(initialState, actionB({ data: "from B", y: 1 })),
-            ).toEqual({ data: "from B" });
+            ).toEqual({
+                data: "from B",
+            });
             expect(
                 reducer(initialState, actionC({ data: "from C", z: 2 })),
-            ).toEqual({ data: "from C" });
+            ).toEqual({
+                data: "from C",
+            });
         });
     })();
 
