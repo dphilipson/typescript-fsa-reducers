@@ -33,9 +33,13 @@
         "jest": "jest",
         "lint-file": "tslint",
         "lint": "tslint --project .",
-        "precommit": "lint-staged",
         "prepublishOnly": "yarn run test && yarn run build",
         "test": "yarn run lint && tsc && yarn run jest"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
     },
     "lint-staged": {
         "**/*.{js,json}": [

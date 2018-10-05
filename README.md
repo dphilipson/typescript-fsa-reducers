@@ -142,9 +142,9 @@ callee to respond to the specified action type. If this is undesirable, see the
 
 ## Installation
 
-For this library to be useful, you will need
-[typescript-fsa](https://github.com/aikoven/typescript-fsa) as well to define
-your actions.
+For this library to be useful, you will also need
+[typescript-fsa](https://github.com/aikoven/typescript-fsa) to define your
+actions.
 
 With Yarn:
 ```
