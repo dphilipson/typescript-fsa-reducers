@@ -48,7 +48,9 @@ describe("reducer builder", () => {
     });
 
     it("should execute the default handler if no cases provided", () => {
-        const reducer = reducerWithoutInitialState<State>(defaultHandler);
+        const reducer = reducerWithoutInitialState<State>().default(
+            defaultHandler,
+        );
         expect(reducer(initialState, { type: "UNKNOWN" })).toEqual(
             defaultHandlerResult,
         );
@@ -62,9 +64,10 @@ describe("reducer builder", () => {
     });
 
     it("should execute the default handler on unknown actions if cases provided", () => {
-        const reducer = reducerWithoutInitialState<State>(defaultHandler)
+        const reducer = reducerWithoutInitialState<State>()
             .case(sliceData, sliceDataHandler)
-            .case(dataToUpperCase, dataToUpperCaseHandler);
+            .case(dataToUpperCase, dataToUpperCaseHandler)
+            .default(defaultHandler);
         expect(reducer(initialState, { type: "UNKNOWN" })).toEqual(
             defaultHandlerResult,
         );
@@ -76,7 +79,9 @@ describe("reducer builder", () => {
     });
 
     it("should return default handler result if state is undefined if only default handler provided", () => {
-        const reducer = reducerWithInitialState(initialState, defaultHandler);
+        const reducer = reducerWithInitialState(initialState).default(
+            defaultHandler,
+        );
         expect(reducer(undefined, { type: "UNKNOWN" })).toEqual(
             defaultHandlerResult,
         );
@@ -90,9 +95,10 @@ describe("reducer builder", () => {
     });
 
     it("should return default handler result if state is undefined if cases and default handler provided", () => {
-        const reducer = reducerWithInitialState(initialState, defaultHandler)
+        const reducer = reducerWithInitialState(initialState)
             .case(sliceData, sliceDataHandler)
-            .case(dataToUpperCase, dataToUpperCaseHandler);
+            .case(dataToUpperCase, dataToUpperCaseHandler)
+            .default(defaultHandler);
         expect(reducer(undefined, { type: "UNKNOWN" })).toEqual(
             defaultHandlerResult,
         );
@@ -116,9 +122,10 @@ describe("reducer builder", () => {
     });
 
     it("should call handler on matching action with multiple handlers and default handler", () => {
-        const reducer = reducerWithoutInitialState<State>(defaultHandler)
+        const reducer = reducerWithoutInitialState<State>()
             .case(sliceData, sliceDataHandler)
-            .case(dataToUpperCase, dataToUpperCaseHandler);
+            .case(dataToUpperCase, dataToUpperCaseHandler)
+            .default(defaultHandler);
         expect(reducer(initialState, dataToUpperCase)).toEqual({
             data: "HELLO",
         });
@@ -156,7 +163,7 @@ describe("reducer builder", () => {
             .case(sliceData, sliceDataHandler)
             .case(dataToUpperCase, dataToUpperCaseHandler);
 
-        const reducer = reducerWithoutInitialState<{ nested: State }>(
+        const reducer = reducerWithoutInitialState<{ nested: State }>().default(
             (state, action) => ({
                 nested: nestedReducer(state.nested, action),
             }),

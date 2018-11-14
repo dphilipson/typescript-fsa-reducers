@@ -35,6 +35,7 @@ the action.
     + [`.caseWithAction(actionCreator, handler(state, action) => newState)`](#casewithactionactioncreator-handlerstate-action--newstate)
     + [`.cases(actionCreators, handler(state, payload) => newState)`](#casesactioncreators-handlerstate-payload--newstate)
     + [`.casesWithAction(actionCreators, handler(state, action) => newState)`](#caseswithactionactioncreators-handlerstate-action--newstate)
+    + [`.default(handler(state, action) => newState)`](#defaulthandlerstate-action--newstate)
     + [`.build()`](#build)
 
 <!-- tocstop -->
@@ -299,6 +300,35 @@ reducerWithInitialState(initialState)
 
 Like `.cases()`, except that the handler receives the entire action as its
 second argument rather than just the payload.
+
+#### `.default(handler(state, action) => newState)`
+
+Mutates the reducer such that it applies `handler` when no previously added `.case()`, `.caseWithAction()`, etc. matched.  
+The handler is similar to the one in `.caseWithAction()`.  
+Note that `.default()` ends the chain and internally does the same as [`.build()`](#build), because it is not intended that the chain is mutated after calling `.default()`.
+
+This is especially useful if you have a nested reducer for some property, that you need to call from the parent reducer on any action:
+
+```
+const NESTED_STATE = {
+    someProp: "hello",
+};
+
+const nestedReducer = reducerWithInitialState(NESTED_STATE)
+    .case(...);
+
+const INITIAL_STATE = {
+    someOtherProp: "world"
+    nested: NESTED_STATE
+};
+
+const reducer = reducerWithInitialState(INITIAL_STATE)
+    .case(...)
+    .default((state, action) => ({
+        ...state,
+        nested: nestedReducer(state.nested, action),
+    }));
+```
 
 #### `.build()`
 
