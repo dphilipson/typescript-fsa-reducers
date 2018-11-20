@@ -9,12 +9,14 @@ Status](https://travis-ci.org/dphilipson/typescript-fsa-reducers.svg?branch=mast
 ## Introduction
 
 This library will allow you to write typesafe reducers that look like this:
+
 ```ts
 const reducer = reducerWithInitialState(INITIAL_STATE)
     .case(setName, setNameHandler)
     .case(addBalance, addBalanceHandler)
     .case(setIsFrozen, setIsFrozenHandler);
 ```
+
 It removes the boilerplate normally associated with writing reducers, including
 if-else chains, the default case, and the need to pull the payload field off of
 the action.
@@ -49,6 +51,7 @@ top of and assumes familiarity with the excellent
 
 Suppose we have used [typescript-fsa](https://github.com/aikoven/typescript-fsa)
 to define our state and some actions:
+
 ```ts
 import actionCreatorFactory from "typescript-fsa";
 const actionCreator = actionCreatorFactory();
@@ -69,7 +72,9 @@ const setName = actionCreator<string>("SET_NAME");
 const addBalance = actionCreator<number>("ADD_BALANCE");
 const setIsFrozen = actionCreator<boolean>("SET_IS_FROZEN");
 ```
+
 Using vanilla `typescript-fsa`, we might define a reducer as follows:
+
 ```ts
 import { Action } from "redux";
 import { isType } from "typescript-fsa";
@@ -89,7 +94,9 @@ function reducer(state = INITIAL_STATE, action: Action): State {
     }
 }
 ```
+
 Using this library, the above is exactly equivalent to the following code:
+
 ```ts
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 
@@ -101,6 +108,7 @@ const reducer = reducerWithInitialState(INITIAL_STATE)
     }))
     .case(setIsFrozen, (state, isFrozen) => ({ ...state, isFrozen }));
 ```
+
 Note that unlike the vanilla case, there is no need to pull the payload off of
 the action, as it is passed directly to the handler, nor is it necessary to
 specify a default case which returns `state` unmodified.
@@ -114,29 +122,37 @@ If the full action is needed rather than just the payload, `.caseWithAction()`
 may be used in place of `.case()`. This may be useful if you intend to pass the
 action unchanged to a different reducer, or if you need to read the `meta` field
 of the action. For example:
+
 ```ts
 import { Action } from "typescript-fsa";
 
 const setText = actionCreator<string>("SET_TEXT");
 
-const reducer = reducerWithInitialState({ text: "", lastEditBy: "" })
-    .caseWithAction(incrementCount, (state, { payload, meta }) => ({
-        text: payload,
-        lastEditBy: meta.author,
-    }));
+const reducer = reducerWithInitialState({
+    text: "",
+    lastEditBy: "",
+}).caseWithAction(incrementCount, (state, { payload, meta }) => ({
+    text: payload,
+    lastEditBy: meta.author,
+}));
 
 // Returns { text: "hello", lastEditBy: "cbrontë" }.
 reducer(undefined, setText("hello", { author: "cbrontë" }));
 ```
+
 Further, a single handler may be assigned to multiple action types at once using
 `.cases()` or `.casesWithAction()`:
+
 ```ts
-const reducer = reducerWithInitialState(initialState)
-    .cases([setName, addBalance], (state, payload) => {
+const reducer = reducerWithInitialState(initialState).cases(
+    [setName, addBalance],
+    (state, payload) => {
         // Payload has type SetNamePayload | AddBalancePayload.
         // ...
-    });
+    },
+);
 ```
+
 The reducer builder chains are mutable. Each call to `.case()` modifies the
 callee to respond to the specified action type. If this is undesirable, see the
 [`.build()`](#build) method below.
@@ -148,11 +164,13 @@ For this library to be useful, you will also need
 actions.
 
 With Yarn:
+
 ```
 yarn add typescript-fsa-reducers typescript-fsa
 ```
 
 Or with NPM:
+
 ```
 npm install --save typescript-fsa-reducers typescript-fsa
 ```
@@ -182,7 +200,8 @@ composing reducers for which initial state is unnecessary.
 
 Note that since the type of the state cannot be inferred from the initial state,
 it must be provided as a type parameter:
-``` javascript
+
+```javascript
 const reducer = reducerWithoutInitialState<State>()
     .case(setName, setNameHandler)
     .case(addBalance, addBalanceHandler)
@@ -200,7 +219,8 @@ Note that the function produced is technically not a reducer because the initial
 and updated states are different type.
 
 Example usage:
-``` javascript
+
+```javascript
 type State = StoppedState | RunningState;
 
 interface StoppedState {
@@ -267,33 +287,41 @@ entire action unmodified to some other function. For an example, see
 
 Like `.case()`, except that multiple action creators may be provided and the
 same handler is applied to all of them. That is,
-``` javascript
-reducerWithInitialState(initialState)
-    .cases([setName, addBalance, setIsFrozen], handler);
+
+```javascript
+reducerWithInitialState(initialState).cases(
+    [setName, addBalance, setIsFrozen],
+    handler,
+);
 ```
+
 is equivalent to
-``` javascript
+
+```javascript
 reducerWithInitialState(initialState)
     .case(setName, handler)
     .case(addBalance, handler)
     .case(setIsFrozen, handler);
 ```
+
 Note that the payload passed to the handler may be of the type of any of the
-listed action types' payloads. In TypeScript terms, this means it has type `P1 |
-P2 | ...`, where `P1, P2, ...` are the payload types of the listed action
+listed action types' payloads. In TypeScript terms, this means it has type `P1 | P2 | ...`, where `P1, P2, ...` are the payload types of the listed action
 creators.
 
 The payload type is inferred automatically for up to four action types. After
 that, it must be supplied as a type annotation, for example:
-``` javascript
-reducerWithInitialState(initialState)
-    .cases<{ documentId: number }>([
+
+```javascript
+reducerWithInitialState(initialState).cases <
+    { documentId: number } >
+    ([
         selectDocument,
         editDocument,
         deleteDocument,
         sendDocument,
-        archiveDocument
-    ], handler)
+        archiveDocument,
+    ],
+    handler);
 ```
 
 #### `.casesWithAction(actionCreators, handler(state, action) => newState)`
@@ -303,13 +331,16 @@ second argument rather than just the payload.
 
 #### `.default(handler(state, action) => newState)`
 
-Mutates the reducer such that it applies `handler` when no previously added `.case()`, `.caseWithAction()`, etc. matched.  
-The handler is similar to the one in `.caseWithAction()`.  
-Note that `.default()` ends the chain and internally does the same as [`.build()`](#build), because it is not intended that the chain is mutated after calling `.default()`.
+Produces a reducer which applies `handler` when no previously added `.case()`,
+`.caseWithAction()`, etc. matched. The handler is similar to the one in
+`.caseWithAction()`. Note that `.default()` ends the chain and internally does
+the same as [`.build()`](#build), because it is not intended that the chain be
+mutated after calling `.default()`.
 
-This is especially useful if you have a nested reducer for some property, that you need to call from the parent reducer on any action:
+This is useful if you need a "delegate" reducer should be called on any action
+after handling a few specific actions in the parent.
 
-```
+```ts
 const NESTED_STATE = {
     someProp: "hello",
 };
@@ -355,7 +386,7 @@ There are two reasons you may want to do this:
 
 Example usage:
 
-``` javascript
+```javascript
 const reducer = reducerWithInitialState(INITIAL_STATE)
     .case(setName, setNameHandler)
     .case(addBalance, addBalanceHandler)
