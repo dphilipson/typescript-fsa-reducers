@@ -72,8 +72,11 @@ export interface ReducerBuilder<InS extends OutS, OutS> {
         handler: Handler<InS, OutS, Action<P>>,
     ): ReducerBuilder<InS, OutS>;
 
-    // Intentionally avoid AnyAction type so packages can export reducers
-    // created using .build() without requiring a dependency on typescript-fsa.
+    // Intentionally avoid AnyAction in return type so packages can export reducers
+    // created using .default() or .build() without requiring a dependency on typescript-fsa.
+    default(
+        defaultHandler: Handler<InS, OutS, AnyAction>,
+    ): (state: InS | undefined, action: { type: any }) => OutS;
     build(): (state: InS | undefined, action: { type: any }) => OutS;
     (state: InS | undefined, action: AnyAction): OutS;
 }
@@ -149,6 +152,10 @@ function makeReducer<InS extends OutS, OutS>(
         reducer.casesWithAction(actionCreators, (state, action) =>
             handler(state, action.payload),
         );
+
+    reducer.default = (defaultHandler: Handler<InS, OutS, AnyAction>) =>
+        getReducerFunction(initialState, cases.slice(), defaultHandler);
+
     reducer.build = () => getReducerFunction(initialState, cases.slice());
 
     return reducer;
@@ -157,6 +164,7 @@ function makeReducer<InS extends OutS, OutS>(
 function getReducerFunction<InS extends OutS, OutS>(
     initialState: InS | undefined,
     cases: CaseList<InS, OutS>,
+    defaultHandler?: Handler<InS, OutS, AnyAction>,
 ) {
     return (state = initialState as InS, action: AnyAction) => {
         for (const { actionCreator, handler } of cases) {
@@ -164,6 +172,6 @@ function getReducerFunction<InS extends OutS, OutS>(
                 return handler(state, action);
             }
         }
-        return state;
+        return defaultHandler ? defaultHandler(state, action) : state;
     };
 }
