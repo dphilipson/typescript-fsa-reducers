@@ -1,6 +1,6 @@
 import { Action, ActionCreator, AnyAction, isType } from "typescript-fsa";
 
-export interface ReducerBuilder<InS extends OutS, OutS> {
+export interface ReducerBuilder<InS extends OutS, OutS = InS> {
     case<P>(
         actionCreator: ActionCreator<P>,
         handler: Handler<InS, OutS, P>,
@@ -72,6 +72,12 @@ export interface ReducerBuilder<InS extends OutS, OutS> {
         handler: Handler<InS, OutS, Action<P>>,
     ): ReducerBuilder<InS, OutS>;
 
+    withHandling(
+        updateBuilder: (
+            builder: ReducerBuilder<InS, OutS>,
+        ) => ReducerBuilder<InS, OutS>,
+    ): ReducerBuilder<InS, OutS>;
+
     // Intentionally avoid AnyAction in return type so packages can export reducers
     // created using .default() or .build() without requiring a dependency on typescript-fsa.
     default(
@@ -86,13 +92,11 @@ export type Handler<InS extends OutS, OutS, P> = (
     payload: P,
 ) => OutS;
 
-export function reducerWithInitialState<S>(
-    initialState: S,
-): ReducerBuilder<S, S> {
+export function reducerWithInitialState<S>(initialState: S): ReducerBuilder<S> {
     return makeReducer<S, S>(initialState);
 }
 
-export function reducerWithoutInitialState<S>(): ReducerBuilder<S, S> {
+export function reducerWithoutInitialState<S>(): ReducerBuilder<S> {
     return makeReducer<S, S>();
 }
 
@@ -152,6 +156,12 @@ function makeReducer<InS extends OutS, OutS>(
         reducer.casesWithAction(actionCreators, (state, action) =>
             handler(state, action.payload),
         );
+
+    reducer.withHandling = (
+        updateBuilder: (
+            builder: ReducerBuilder<InS, OutS>,
+        ) => ReducerBuilder<InS, OutS>,
+    ) => updateBuilder(reducer);
 
     reducer.default = (defaultHandler: Handler<InS, OutS, AnyAction>) =>
         getReducerFunction(initialState, cases.slice(), defaultHandler);

@@ -1,5 +1,6 @@
 import actionCreatorFactory from "typescript-fsa";
 import {
+    ReducerBuilder,
     reducerWithInitialState,
     reducerWithoutInitialState,
     upcastingReducer,
@@ -244,6 +245,18 @@ describe("reducer builder", () => {
         const reducer = reducerWithInitialState(initialState);
         reducer.case(sliceData, sliceDataHandler);
         reducer.case(dataToUpperCase, dataToUpperCaseHandler);
+        expect(reducer(undefined, sliceData(1))).toEqual({
+            data: "ello",
+        });
+    });
+
+    it("should apply handling function to itself in .withHandling()", () => {
+        const handling = (
+            builder: ReducerBuilder<State>,
+        ): ReducerBuilder<State> => builder.case(sliceData, sliceDataHandler);
+        const reducer = reducerWithInitialState(initialState).withHandling(
+            handling,
+        );
         expect(reducer(undefined, sliceData(1))).toEqual({
             data: "ello",
         });

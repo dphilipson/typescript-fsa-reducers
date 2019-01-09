@@ -37,6 +37,7 @@ the action.
     + [`.caseWithAction(actionCreator, handler(state, action) => newState)`](#casewithactionactioncreator-handlerstate-action--newstate)
     + [`.cases(actionCreators, handler(state, payload) => newState)`](#casesactioncreators-handlerstate-payload--newstate)
     + [`.casesWithAction(actionCreators, handler(state, action) => newState)`](#caseswithactionactioncreators-handlerstate-action--newstate)
+    + [`.withHandling(updateBuilder(builder) => builder)`](#withhandlingupdatebuilderbuilder--builder)
     + [`.default(handler(state, action) => newState)`](#defaulthandlerstate-action--newstate)
     + [`.build()`](#build)
 
@@ -328,6 +329,12 @@ reducerWithInitialState(initialState).cases <
 
 Like `.cases()`, except that the handler receives the entire action as its
 second argument rather than just the payload.
+
+#### `.withHandling(updateBuilder(builder) => builder)`
+
+Convenience method which applies the provided function to the current builder
+and returns the result. Useful if you have a sequence of builder updates (calls
+to `.case()`, etc.) which you want to reuse across several reducers.
 
 #### `.default(handler(state, action) => newState)`
 
