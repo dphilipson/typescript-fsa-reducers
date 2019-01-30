@@ -214,10 +214,11 @@ const reducer = reducerWithoutInitialState<State>()
 Starts a builder-chain which produces a "reducer" whose return type is a
 supertype of the input state. This is most useful for handling a state which may
 be in one of several "modes", each of which responds differently to actions and
-can transition to the other modes. Many programs will not have a use for this.
+can transition to the other modes. Many applications will not have a use for
+this.
 
 Note that the function produced is technically not a reducer because the initial
-and updated states are different type.
+and updated states are different types.
 
 Example usage:
 
@@ -344,8 +345,8 @@ Produces a reducer which applies `handler` when no previously added `.case()`,
 the same as [`.build()`](#build), because it is not intended that the chain be
 mutated after calling `.default()`.
 
-This is useful if you need a "delegate" reducer should be called on any action
-after handling a few specific actions in the parent.
+This is useful if you have a "delegate" reducer that should be called on any
+action after handling a few specific actions in the parent.
 
 ```ts
 const NESTED_STATE = {
