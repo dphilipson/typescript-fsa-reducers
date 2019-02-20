@@ -78,6 +78,8 @@ export interface ReducerBuilder<InS extends OutS, OutS = InS> {
         ) => ReducerBuilder<InS, OutS>,
     ): ReducerBuilder<InS, OutS>;
 
+    getActionCreatorsUsedInCases(): ReadonlyArray<ActionCreator<unknown>>;
+
     // Intentionally avoid AnyAction in return type so packages can export reducers
     // created using .default() or .build() without requiring a dependency on typescript-fsa.
     default(
@@ -162,6 +164,9 @@ function makeReducer<InS extends OutS, OutS>(
             builder: ReducerBuilder<InS, OutS>,
         ) => ReducerBuilder<InS, OutS>,
     ) => updateBuilder(reducer);
+
+    reducer.getActionCreatorsUsedInCases = () =>
+        cases.map(c => c.actionCreator);
 
     reducer.default = (defaultHandler: Handler<InS, OutS, AnyAction>) =>
         getReducerFunction(initialState, cases.slice(), defaultHandler);

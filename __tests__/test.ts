@@ -250,6 +250,19 @@ describe("reducer builder", () => {
         });
     });
 
+    it("returns action creators used in cases", () => {
+        const reducer = reducerWithInitialState(initialState);
+        expect(reducer.getActionCreatorsUsedInCases()).toEqual([]);
+        reducer.case(sliceData, sliceDataHandler);
+        expect(reducer.getActionCreatorsUsedInCases()).toEqual([sliceData]);
+        reducer.cases([dataToUpperCase, toBasicState], state => state);
+        expect(reducer.getActionCreatorsUsedInCases()).toEqual([
+            sliceData,
+            dataToUpperCase,
+            toBasicState,
+        ]);
+    });
+
     it("should apply handling function to itself in .withHandling()", () => {
         const handling = (
             builder: ReducerBuilder<State>,

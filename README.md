@@ -40,6 +40,7 @@ the action.
     + [`.withHandling(updateBuilder(builder) => builder)`](#withhandlingupdatebuilderbuilder--builder)
     + [`.default(handler(state, action) => newState)`](#defaulthandlerstate-action--newstate)
     + [`.build()`](#build)
+    + [`.getActionCreatorsUsedInCases()`](#getactioncreatorsusedincases)
 
 <!-- tocstop -->
 
@@ -401,5 +402,24 @@ const reducer = reducerWithInitialState(INITIAL_STATE)
     .case(setIsFrozen, setIsFrozenHandler)
     .build();
 ```
+
+#### `.getActionCreatorsUsedInCases()`
+
+Returns an array of the action creators that are used in the reducer chain. This
+list is useful, e.g., when you want to reset the state in another reducer when
+any of the actions affecting the state in the current reducer are dispatched.
+
+```javascript
+const userAccountReducer = reducerWithInitialState(USER_ACCOUNT_INITIAL_STATE)
+    .case(signIn, signInHandler)
+    .case(signOut, signOutHandler);
+
+const userAccountModifiers = userAccountReducer.getActionCreatorsUsedInCases();
+
+// Reset user data when the user account changes.
+const userDataReducer = reducerWithInitialState(USER_DATA_INITIAL_STATE)
+    .cases(userAccountModifiers, state => USER_DATA_INITIAL_STATE);
+```
+
 
 Copyright © 2017 David Philipson
