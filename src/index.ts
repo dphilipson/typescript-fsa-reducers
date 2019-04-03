@@ -1,4 +1,4 @@
-import { Action, ActionCreator, AnyAction, isType } from "typescript-fsa";
+import { Action, ActionCreator, AnyAction } from "typescript-fsa";
 
 export interface ReducerBuilder<InS extends OutS, OutS = InS> {
     case<P>(
@@ -107,27 +107,22 @@ export function upcastingReducer<InS extends OutS, OutS>(): ReducerBuilder<
     return makeReducer<InS, OutS>();
 }
 
-interface Case<InS extends OutS, OutS, P> {
-    actionCreator: ActionCreator<P>;
-    handler: Handler<InS, OutS, Action<P>>;
-}
-
-type CaseList<InS extends OutS, OutS> = Array<Case<InS, OutS, any>>;
-
 function makeReducer<InS extends OutS, OutS>(
     initialState?: InS,
 ): ReducerBuilder<InS, OutS> {
-    const cases: CaseList<InS, OutS> = [];
-    const reducer = getReducerFunction(initialState, cases) as ReducerBuilder<
-        InS,
-        OutS
-    >;
+    const handlersByActionType: {
+        [actionType: string]: Handler<InS, OutS, any>;
+    } = {};
+    const reducer = getReducerFunction(
+        initialState,
+        handlersByActionType,
+    ) as ReducerBuilder<InS, OutS>;
 
     reducer.caseWithAction = <P>(
         actionCreator: ActionCreator<P>,
         handler: Handler<InS, OutS, Action<P>>,
     ) => {
-        cases.push({ actionCreator, handler });
+        handlersByActionType[actionCreator.type] = handler;
         return reducer;
     };
 
@@ -164,24 +159,25 @@ function makeReducer<InS extends OutS, OutS>(
     ) => updateBuilder(reducer);
 
     reducer.default = (defaultHandler: Handler<InS, OutS, AnyAction>) =>
-        getReducerFunction(initialState, cases.slice(), defaultHandler);
+        getReducerFunction(
+            initialState,
+            { ...handlersByActionType },
+            defaultHandler,
+        );
 
-    reducer.build = () => getReducerFunction(initialState, cases.slice());
+    reducer.build = () =>
+        getReducerFunction(initialState, { ...handlersByActionType });
 
     return reducer;
 }
 
 function getReducerFunction<InS extends OutS, OutS>(
     initialState: InS | undefined,
-    cases: CaseList<InS, OutS>,
+    handlersByActionType: { [actionType: string]: Handler<InS, OutS, any> },
     defaultHandler?: Handler<InS, OutS, AnyAction>,
 ) {
     return (state = initialState as InS, action: AnyAction) => {
-        for (const { actionCreator, handler } of cases) {
-            if (isType(action, actionCreator)) {
-                return handler(state, action);
-            }
-        }
-        return defaultHandler ? defaultHandler(state, action) : state;
+        const handler = handlersByActionType[action.type] || defaultHandler;
+        return handler ? handler(state, action) : state;
     };
 }
