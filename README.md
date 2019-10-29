@@ -150,6 +150,10 @@ const reducer = reducerWithInitialState(initialState).cases(
     (state, payload) => {
         // Payload has type SetNamePayload | AddBalancePayload.
         // ...
+
+        // Make sure to return the updated state, or TypeScript will give you a
+        // rather unhelpful error message.
+        return state;
     },
 );
 ```
