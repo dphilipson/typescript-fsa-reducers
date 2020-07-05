@@ -11,10 +11,6 @@ export interface ReducerBuilder<InS, OutS = InS, PassedS = InS | undefined> {
     ): ReducerBuilder<InS, OutS, PassedS>;
 
     // cases variadic overloads
-    cases<P1>(
-        actionCreators: [ActionCreator<P1>],
-        handler: Handler<InS, OutS, P1>,
-    ): ReducerBuilder<InS, OutS, PassedS>;
     cases<P1, P2>(
         actionCreators: [ActionCreator<P1>, ActionCreator<P2>],
         handler: Handler<InS, OutS, P1 | P2>,
@@ -42,10 +38,6 @@ export interface ReducerBuilder<InS, OutS = InS, PassedS = InS | undefined> {
     ): ReducerBuilder<InS, OutS, PassedS>;
 
     // casesWithAction variadic overloads
-    casesWithAction<P1>(
-        actionCreators: [ActionCreator<P1>],
-        handler: Handler<InS, OutS, Action<P1>>,
-    ): ReducerBuilder<InS, OutS, PassedS>;
     casesWithAction<P1, P2>(
         actionCreators: [ActionCreator<P1>, ActionCreator<P2>],
         handler: Handler<InS, OutS, Action<P1 | P2>>,
