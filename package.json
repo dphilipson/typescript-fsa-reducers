@@ -1,6 +1,6 @@
 {
     "name": "typescript-fsa-reducers",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Fluent syntax for defining typesafe Redux reducers on top of typescript-fsa.",
     "main": "dist/index.js",
     "types": "dist/index",
