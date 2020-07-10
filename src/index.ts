@@ -70,12 +70,13 @@ export interface ReducerBuilder<InS, OutS = InS, PassedS = InS | undefined> {
         ) => ReducerBuilder<InS, OutS, PassedS>,
     ): ReducerBuilder<InS, OutS, PassedS>;
 
-    // Intentionally avoid AnyAction in return type so packages can export reducers
-    // created using .default() or .build() without requiring a dependency on typescript-fsa.
+    // Intentionally avoid AnyAction in return type so packages can export
+    // reducers created using .default() or .build() without consumers requiring
+    // a dependency on typescript-fsa.
     default(
         defaultHandler: Handler<InS, OutS, AnyAction>,
-    ): (state: PassedS, action: AnyAction) => OutS;
-    build(): (state: PassedS, action: AnyAction) => OutS;
+    ): (state: PassedS, action: { type: any }) => OutS;
+    build(): (state: PassedS, action: { type: any }) => OutS;
     (state: PassedS, action: AnyAction): OutS;
 }
 

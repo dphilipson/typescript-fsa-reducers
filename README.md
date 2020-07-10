@@ -206,7 +206,7 @@ composing reducers for which initial state is unnecessary.
 Note that since the type of the state cannot be inferred from the initial state,
 it must be provided as a type parameter:
 
-```javascript
+```ts
 const reducer = reducerWithoutInitialState<State>()
     .case(setName, setNameHandler)
     .case(addBalance, addBalanceHandler)
@@ -394,7 +394,8 @@ There are two reasons you may want to do this:
     separate NPM packages, you may run into type errors since the exported
     reducer has type `ReducerBuilder`, which the consuming package does not
     recognize unless it also depends on `typescript-fsa-reducers`. This is
-    avoided by returning a plain function instead.
+    avoided by calling `.build()`, whose return type is a plain function
+    instead.
 
 Example usage:
 
