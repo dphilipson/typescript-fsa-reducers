@@ -227,7 +227,7 @@ and updated states are different types.
 Example usage:
 
 ```javascript
-type State = StoppedState | RunningState;
+type State = StoppedState | StartedState;
 
 interface StoppedState {
     type: "STOPPED";
